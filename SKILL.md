@@ -1,19 +1,13 @@
 ---
-name: IP-GAME
-version: 0.1.1
-type: codex-skill
-language: zh-CN
-entrypoint:
-  kind: cli
-  command: ip-game
-platform: cross-platform
-safe_by_default: true
-no_secrets_in_repo: true
+name: ip-game
+description: Create and package IP-GAME interactive film games from story.json and ui.json. Use when Codex needs to build 互动影游 or 剧情游戏 projects, follow the 6-step user-question SOP, generate character and node image prompts, choose role/node/video asset sources, synthesize local mp4 node videos from still images, build offline game.html, or verify assets.
 ---
 
 # IP-GAME（Codex 标准 Skill）
 
 IP-GAME 的核心不是“直接替你调用 AI 生图/生视频”，而是一套**本地可落地的工具链**：把 `story.json/ui.json` 组织成可试玩的 `game.html`，并提供“提示词生成 + 静态图合成视频 + 资产自检”的闭环，让你在任何平台都能按同一套流程跑通。
+
+运行入口：CLI 命令 `ip-game`。当前仓库版本：`0.1.1`。平台：Windows / macOS / Linux。默认安全边界：不触网、不内置密钥、输出只写项目目录。
 
 ---
 
