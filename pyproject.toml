@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ip-game"
+version = "0.1.0"
+description = "Portable interactive film game generator: story.json -> local HTML game + optional image-to-video synthesis"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "IP-GAME contributors" }]
+dependencies = [
+  "pillow>=10.0.0",
+  "imageio-ffmpeg>=0.5.1",
+]
+
+[project.scripts]
+ip-game = "ip_game.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.package-data]
+ip_game = [
+  "templates/*.html",
+  "prompts/*.md",
+]
+

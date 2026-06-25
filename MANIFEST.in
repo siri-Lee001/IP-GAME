@@ -1,0 +1,3 @@
+recursive-include src/ip_game/templates *.html
+recursive-include src/ip_game/prompts *.md
+

@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>__TITLE__</title>
+    <style>
+      :root{
+        --bg:#0b0f14;
+        --panel:rgba(255,255,255,.06);
+        --text:#eef2ff;
+        --muted:rgba(238,242,255,.75);
+        --primary:#7c3aed;
+        --radius:16px;
+        --maxw: 980px;
+      }
+      *{ box-sizing:border-box; }
+      body{
+        margin:0;
+        font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "PingFang SC","Microsoft YaHei", sans-serif;
+        background: radial-gradient(1200px 800px at 30% 10%, rgba(124,58,237,.25), transparent 60%), var(--bg);
+        color:var(--text);
+        min-height:100vh;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        padding:24px;
+      }
+      .app{ width:min(var(--maxw), 100%); }
+      .card{ background:var(--panel); border:1px solid rgba(255,255,255,.08); border-radius:var(--radius); overflow:hidden; }
+      header{ padding:14px 16px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,.08); }
+      header .t{ font-weight:900; }
+      header .s{ font-size:12px; color:var(--muted); }
+      main{ padding:16px; }
+      .videoWrap{ background:#000; border-radius:14px; overflow:hidden; border:1px solid rgba(255,255,255,.10); }
+      .videoWrap.landscape{ aspect-ratio:16/9; }
+      .videoWrap.portrait{ aspect-ratio:9/16; max-width:420px; margin:0 auto; }
+      video{ width:100%; height:100%; object-fit:contain; display:block; }
+      .nodeTitle{ font-weight:900; margin-top:12px; }
+      .nodeDesc{ margin-top:6px; color:var(--muted); line-height:1.6; }
+      .caption{ margin-top:10px; background:rgba(0,0,0,.30); border:1px solid rgba(255,255,255,.10); border-radius:12px; padding:12px; line-height:1.7; white-space:pre-wrap; }
+      .choices{ display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; }
+      button{ cursor:pointer; border:1px solid rgba(255,255,255,.14); border-radius:12px; padding:10px 14px; font-weight:800; background:rgba(255,255,255,.10); color:var(--text); }
+      button.primary{ background: linear-gradient(135deg, rgba(124,58,237,1), rgba(124,58,237,.75)); border:0; }
+      .endingImg{ margin-top:12px; width:100%; border-radius:14px; border:1px solid rgba(255,255,255,.10); }
+      .row{ display:flex; gap:10px; flex-wrap:wrap; }
+      .pill{ font-size:12px; padding:6px 10px; border-radius:999px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.10); color:var(--muted); }
+      a{ color:inherit; }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <div class="card">
+        <header>
+          <div>
+            <div class="t">__TITLE__</div>
+            <div class="s">__TAGLINE__</div>
+          </div>
+          <div class="pill" id="pill">离线可玩 · HTML</div>
+        </header>
+        <main>
+          <div id="home">
+            <p style="color:var(--muted);line-height:1.7;max-width:70ch;margin:0 0 14px 0;">__SYNOPSIS__</p>
+            <div class="row">
+              <button class="primary" id="btnStart">开始</button>
+              <button id="btnMap">地图</button>
+            </div>
+          </div>
+
+          <div id="play" style="display:none;">
+            <div class="videoWrap landscape" id="videoWrap">
+              <video id="video" controls playsinline preload="metadata"></video>
+            </div>
+            <div class="nodeTitle" id="nodeTitle"></div>
+            <div class="nodeDesc" id="nodeDesc"></div>
+            <div class="caption" id="caption"></div>
+            <div class="choices" id="choices"></div>
+            <img id="endingImg" class="endingImg" style="display:none;" />
+            <div class="row" style="margin-top:14px;">
+              <button id="btnBackHome">回到开头</button>
+            </div>
+          </div>
+
+          <div id="map" style="display:none;">
+            <div style="font-weight:900;margin-bottom:10px;">路线</div>
+            <div id="mapList" style="color:var(--muted);line-height:1.8;"></div>
+            <div class="row" style="margin-top:14px;">
+              <button id="btnCloseMap">返回</button>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <script id="__STORY__" type="application/json">__STORY_JSON__</script>
+    <script id="__UI__" type="application/json">__UI_CONFIG_JSON__</script>
+    <script>
+      const story = JSON.parse(document.getElementById('__STORY__').textContent);
+      const ui = JSON.parse(document.getElementById('__UI__').textContent || '{}');
+      const q = (story.meta && story.meta.questionnaire) || {};
+      const aspect = q.aspect_ratio || '横版16:9';
+
+      const homeEl = document.getElementById('home');
+      const playEl = document.getElementById('play');
+      const mapEl = document.getElementById('map');
+      const mapList = document.getElementById('mapList');
+      const videoWrap = document.getElementById('videoWrap');
+      const videoEl = document.getElementById('video');
+      const titleEl = document.getElementById('nodeTitle');
+      const descEl = document.getElementById('nodeDesc');
+      const captionEl = document.getElementById('caption');
+      const choicesEl = document.getElementById('choices');
+      const endingImgEl = document.getElementById('endingImg');
+
+      if (aspect === '竖版9:16') {
+        videoWrap.classList.remove('landscape');
+        videoWrap.classList.add('portrait');
+      }
+      // Apply theme color if provided
+      const primary = ui?.theme?.colors?.primary;
+      if (primary) document.documentElement.style.setProperty('--primary', primary);
+      const pillText = ui?.copy?.pill;
+      if (pillText) document.getElementById('pill').textContent = pillText;
+
+      const nodeMap = new Map((story.nodes || []).map(n => [n.id, n]));
+      const startId = story.startNodeId || (story.nodes && story.nodes[0] && story.nodes[0].id);
+
+      function relToAbs(rel){
+        if(!rel) return '';
+        // keep file:// safe: do not append cache bust query
+        return rel;
+      }
+
+      function setStage(stage){
+        homeEl.style.display = stage === 'home' ? '' : 'none';
+        playEl.style.display = stage === 'play' ? '' : 'none';
+        mapEl.style.display  = stage === 'map'  ? '' : 'none';
+      }
+
+      function renderMap(){
+        const lines = [];
+        for (const n of (story.nodes || [])) {
+          const cs = (n.choices || []).map(c => `${c.text} -> ${c.to}`).join('；');
+          lines.push(`• ${n.id} ${n.title || ''}${cs ? '：' + cs : ''}`);
+        }
+        mapList.textContent = lines.join('\\n');
+      }
+
+      function playNode(nodeId){
+        const n = nodeMap.get(nodeId);
+        if(!n){ alert('节点不存在：' + nodeId); return; }
+        setStage('play');
+        endingImgEl.style.display = 'none';
+        endingImgEl.src = '';
+        choicesEl.innerHTML = '';
+
+        titleEl.textContent = n.title || n.id;
+        descEl.textContent = n.description || '';
+        const cap = [n.narration || '', n.dialogue || ''].filter(Boolean).join('\\n');
+        captionEl.textContent = cap || '（无字幕）';
+
+        const media = n.media || {};
+        const v = relToAbs(media.video);
+        if (v) {
+          videoEl.src = v;
+        } else {
+          videoEl.removeAttribute('src');
+        }
+        videoEl.load();
+
+        const renderChoices = () => {
+          choicesEl.innerHTML = '';
+          const choices = n.choices || [];
+          if (n.isEnding) {
+            // Ending: show ending image + text
+            if (media.endingImage) {
+              endingImgEl.src = relToAbs(media.endingImage);
+              endingImgEl.style.display = '';
+            }
+            if (n.endingText) captionEl.textContent = n.endingText;
+            return;
+          }
+          for (const c of choices) {
+            const btn = document.createElement('button');
+            btn.textContent = c.text || c.to;
+            btn.onclick = () => playNode(c.to);
+            choicesEl.appendChild(btn);
+          }
+        };
+
+        // show choices after playback ends (or immediately if no video)
+        videoEl.onended = renderChoices;
+        videoEl.onerror = renderChoices;
+        if(!v) renderChoices();
+      }
+
+      document.getElementById('btnStart').onclick = () => playNode(startId);
+      document.getElementById('btnBackHome').onclick = () => setStage('home');
+      document.getElementById('btnMap').onclick = () => { renderMap(); setStage('map'); };
+      document.getElementById('btnCloseMap').onclick = () => setStage('home');
+    </script>
+  </body>
+</html>
+
