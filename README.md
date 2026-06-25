@@ -3,6 +3,9 @@
 这个仓库提供一个**跨平台可调用**的“互动影游生成器”便携版：不依赖任何特定应用的 Skill 运行时。  
 你可以在 Windows / macOS / Linux 上用同一套命令，把结构化剧本 `story.json` 打包成可离线试玩的 `game.html`，并可选用本地静态图合成节点视频（不调用任何视频 API）。
 
+如果你的平台需要一个“技能入口说明”（类似 Codex 的 Skill 包），请直接看：
+- `SKILL.md`
+
 ---
 
 ## 安装
@@ -65,6 +68,12 @@ ip-game verify <project-dir>
 
 ---
 
+## 作为 Skill 调用（给其它平台）
+
+很多平台不会自动识别 `.trae/skills/` 结构，而更喜欢一个**仓库根目录的技能说明入口**。本仓库已提供 `SKILL.md`，你可以将其中“调用提示词”复制到平台的 Skill 配置里。
+
+---
+
 ## 命令一览
 
 ```text
@@ -87,4 +96,3 @@ ip-game generate-character-prompts <project-dir> [--story story.json]
 ## 协议
 
 MIT
-
