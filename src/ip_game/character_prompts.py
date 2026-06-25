@@ -5,6 +5,9 @@ import re
 from pathlib import Path
 
 
+PROMPT_VERSION = "ip-game-character-v1.2"
+
+
 def normalize_filename(s: str) -> str:
     s = re.sub(r"[\\/:*?\"<>|]+", "_", s)
     return s.strip()[:120] if s else "untitled"
@@ -68,9 +71,28 @@ def build_prompt(meta: dict, ch: dict) -> str:
 
 单张合成图，左中右三分区构图，三区统一光影与色彩，柔光棚拍布光，光源方向一致。
 
-左区（占画面宽度约25%）：正面超高清特写（头部至胸部/上半身），头顶结构完整入画不裁切。
-中区（占画面宽度约45%）：三张全身站姿并排（正/侧/背），头顶与脚底对齐，角色高度一致。
-右区（占画面宽度约30%）：2列×3行肖像网格（不同角度/不同轻微表情），但仍保持同一脸与同一发型结构。
+左区（占画面宽度约25%）：
+- 角色正面超高清特写
+- 构图为头部至胸部/对应身体上半部分
+- 头顶所有关键结构完整入画，不裁切
+- 眼神平视前方，自然放松，主要视觉器官清晰锐利对焦
+- 服装、领口、配饰与角色设定严格一致
+
+中区（占画面宽度约45%）：
+- 三张全身站姿图并排排列，头顶与脚底在同一水平线对齐，角色高度一致
+- 必须完整呈现角色全身/完整躯体
+- 中区左：全身正面站姿，中性站姿
+- 中区中：全身 90° 侧面站姿（面朝左），中性站姿
+- 中区右：全身背面站姿，中性站姿
+
+右区（占画面宽度约30%）：
+- 2列×3行肖像网格，六格等大
+- 第一行左：正面朝左45°，无表情
+- 第一行右：正背面视图或头部后侧视图
+- 第二行左：正面低头30°，无表情
+- 第二行右：正面抬头30°，无表情
+- 第三行左：正面，开心表情，情绪克制不过度夸张
+- 第三行右：正面，生气表情，情绪克制不过度夸张
 
 质感与画质：
 - {style}
@@ -114,8 +136,10 @@ def generate_character_prompts(project_dir: Path, story_path: Path | None = None
             images.setdefault("face", f"assets/images/characters/{cid}_face.jpg")
 
         ch["images"] = images
-        if not ch.get("characterSheetPrompt"):
+        regenerate = (ch.get("characterPromptVersion") != PROMPT_VERSION) and not ch.get("promptLocked")
+        if not ch.get("characterSheetPrompt") or regenerate:
             ch["characterSheetPrompt"] = build_prompt(meta, ch)
+            ch["characterPromptVersion"] = PROMPT_VERSION
             changed = True
 
         (prompt_dir / f"{cid}_sheet.txt").write_text(ch["characterSheetPrompt"], encoding="utf-8")

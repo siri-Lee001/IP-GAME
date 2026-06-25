@@ -1,101 +1,131 @@
-# IP-GAME（跨平台便携版）
+# IP-GAME
 
-这个仓库提供一个**跨平台可调用**的“互动影游生成器”便携版：不依赖任何特定应用的 Skill 运行时。  
-你可以在 Windows / macOS / Linux 上用同一套命令，把结构化剧本 `story.json` 打包成可离线试玩的 `game.html`，并可选用本地静态图合成节点视频（不调用任何视频 API）。
+IP-GAME is a portable interactive film game generator. It turns a structured `story.json` plus optional `ui.json` into an offline playable `game.html`, and provides helper commands for character prompts, node image prompts, local video fallback, and asset verification.
 
-如果你的平台需要一个“技能入口说明”（Codex 标准 Skill 包），请直接看：
-- `SKILL.md`
+This repository is designed to be shared as a Codex-style skill or used as a normal Python CLI package.
 
-如果你需要“对话式流程 + 问用户的问题模板”，请看：
-- `INTERACTION.md`
+## What It Does
 
----
+- Follows a 6-step interactive film SOP: story, smart questions, script confirmation, character references, node images, video source, final package.
+- Generates character sheet prompts and node scene/storyboard prompts.
+- Fills standard asset paths in `story.json`.
+- Builds a richer offline `game.html` with poster page, intro modal, route map, node replay, chapter jump, ending page, and TTS toggle.
+- Optionally synthesizes simple local MP4 videos from still images for prototype testing.
+- Verifies images, aspect ratio, videos, and final delivery risk.
 
-## 安装
+## Install
 
-要求：Python `>= 3.10`
+Python `>=3.10` is required.
 
 ```bash
 pip install -U pip
 pip install .
 ```
 
-或开发模式：
+Development mode:
 
 ```bash
 pip install -e .
 ```
 
----
+For local static video synthesis, make sure ffmpeg is available. The package depends on `imageio-ffmpeg`, which provides a bundled ffmpeg path for common environments.
 
-## 快速开始
-
-### 1) 准备一个项目目录
-
-项目目录里至少需要：
+## Project Layout
 
 ```text
 <project>/
   story.json
-  ui.json            # 可选（没有会用默认值）
+  ui.json
   assets/
     images/
+      characters/
+      scenes/
+      storyboards/
+      endings/
+    prompts/
+      characters/
     videos/
+  game.html
 ```
 
-### 2) 打包生成 `game.html`
+## Quick Start
+
+Generate prompts and default media paths:
+
+```bash
+ip-game generate-character-prompts <project-dir>
+ip-game generate-node-prompts <project-dir>
+```
+
+Build the playable HTML:
 
 ```bash
 ip-game build-html <project-dir>
 ```
 
-### 3) 用静态图合成视频（不调用任何 API）
-
-会按“scene still + storyboard still”的策略生成节点 mp4：
+Create prototype videos from still images:
 
 ```bash
-ip-game make-videos <project-dir>
+ip-game make-videos <project-dir> --skip-existing
 ```
 
-可指定轻量测试分辨率（默认会按 16:9/9:16 自动取 1920x1080/1080x1920）：
-
-```bash
-ip-game make-videos <project-dir> --size 1280x720
-```
-
-### 4) 资产自检
+Verify before delivery:
 
 ```bash
 ip-game verify <project-dir>
 ```
 
----
-
-## 作为 Skill 调用（给其它平台）
-
-很多平台不会自动识别 `.trae/skills/` 结构，而更喜欢一个**仓库根目录的技能说明入口**。本仓库已提供 `SKILL.md`，你可以将其中“调用提示词”复制到平台的 Skill 配置里。
-
----
-
-## 命令一览
+## Commands
 
 ```text
 ip-game build-html <project-dir> [--story story.json] [--ui ui.json]
+ip-game generate-character-prompts <project-dir> [--story story.json]
+ip-game generate-node-prompts <project-dir> [--story story.json]
 ip-game make-videos <project-dir> [--story story.json] [--only N0,E0] [--skip-existing] [--size 1280x720]
 ip-game verify <project-dir> [--story story.json]
-ip-game generate-node-prompts <project-dir> [--story story.json]
-ip-game generate-character-prompts <project-dir> [--story story.json]
 ```
 
----
+## Delivery Tiers
 
-## 安全与密钥
+Use `story.meta.deliveryTier` to make quality explicit.
 
-- 本仓库**不包含任何密钥**。
-- 如需接入第三方视频 API，请在你自己的环境里通过环境变量/私密配置管理，不要把密钥提交到 GitHub。
+- `prototype`: flow test or playable draft. Static-image MP4s and placeholder assets are allowed.
+- `final`: production-style delivery. Character references, node images, ending images, aspect ratio consistency, and playable videos are expected.
 
----
+The verifier is stricter for `final` and flags suspiciously small videos.
 
-## 协议
+## Video API
+
+The CLI does not call any cloud video API by default. A provider reference is included at:
+
+```text
+providers/video.provider.json
+```
+
+It describes an Aliyun DashScope Wan image-to-video async setup and expects the key in the `DASHSCOPE_API_KEY` environment variable. The file is a configuration reference only. It contains no secrets and should not be auto-triggered without user confirmation.
+
+Recommended source order:
+
+1. User-confirmed video API for high-quality output.
+2. User-provided local MP4 files.
+3. Local static synthesis for prototype fallback.
+
+## Skill Usage
+
+For Codex or another agent platform:
+
+- Use `SKILL.md` as the skill entry point.
+- Use `INTERACTION.md` as the required conversation SOP.
+- Do not skip character-source confirmation before node-image generation.
+- Do not describe prototype fallback videos as final rendered videos.
+
+## Safety
+
+- No API keys, cookies, or tokens are included.
+- Generated output stays inside the project directory.
+- Local file paths are stored as relative paths where possible.
+- Existing user assets should not be overwritten without explicit permission.
+
+## License
 
 MIT

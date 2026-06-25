@@ -57,7 +57,7 @@ def cmd_generate_character_prompts(args: argparse.Namespace) -> int:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(prog="ip-game", description="Portable IP-GAME CLI (cross-platform).")
+    p = argparse.ArgumentParser(prog="ip-game", description="IP-GAME CLI: prompts, prototype videos, verification, and offline HTML.")
     sub = p.add_subparsers(dest="cmd", required=True)
 
     b = sub.add_parser("build-html", help="Build game.html from story.json/ui.json")
@@ -66,7 +66,7 @@ def build_parser() -> argparse.ArgumentParser:
     b.add_argument("--ui", default=None, help="Path to ui.json (default: <project_dir>/ui.json)")
     b.set_defaults(func=cmd_build_html)
 
-    mv = sub.add_parser("make-videos", help="Synthesize mp4 from images locally (no API).")
+    mv = sub.add_parser("make-videos", help="Synthesize prototype mp4 files from images locally (no API).")
     mv.add_argument("project_dir")
     mv.add_argument("--story", default=None)
     mv.add_argument("--only", default=None, help="Comma-separated node IDs, e.g. N0,E0")

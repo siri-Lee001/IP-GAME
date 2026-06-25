@@ -1,0 +1,42 @@
+{
+  "type": "video",
+  "name": "aliyun_dashscope_wan_i2v_ref_first_frame",
+  "notes": "阿里云百炼 Wan 图生视频（参考图/首帧，异步）。推荐使用 story.json 的 media.videoRefImage（默认指向 storyboardImage）作为 input.img_url 的 data URL。创建任务后轮询 tasks 接口获取 output.video_url。Authorization 使用环境变量 DASHSCOPE_API_KEY 拼接 Bearer。此文件只提供配置说明，不包含密钥，也不会自动触发生成；调用视频 API 必须得到用户明确确认。",
+  "secretPolicy": {
+    "requiredEnv": "DASHSCOPE_API_KEY",
+    "neverCommitSecrets": true
+  },
+  "http": {
+    "endpoint": "https://dashscope.aliyuncs.com/api/v1/services/aigc/video-generation/video-synthesis",
+    "method": "POST",
+    "headers": {
+      "X-DashScope-Async": "enable",
+      "Authorization": "Bearer {{API_KEY}}",
+      "Content-Type": "application/json"
+    },
+    "bodyTemplate": {
+      "model": "wan2.6-i2v-flash",
+      "input": {
+        "prompt": "{{PROMPT}}",
+        "img_url": "{{FIRST_FRAME_IMAGE_DATA_URL}}"
+      },
+      "parameters": {
+        "resolution": "{{RESOLUTION}}",
+        "duration": "{{DURATION_SECONDS}}",
+        "prompt_extend": true,
+        "watermark": false
+      }
+    },
+    "responseMap": {
+      "kind": "object",
+      "path": "output.task_id"
+    },
+    "async": {
+      "enabled": true,
+      "statusEndpoint": "https://dashscope.aliyuncs.com/api/v1/tasks/{task_id}",
+      "statusPath": "output.task_status",
+      "successValue": "SUCCEEDED",
+      "resultPath": "output.video_url"
+    }
+  }
+}

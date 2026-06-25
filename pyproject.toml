@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ip-game"
-version = "0.1.0"
-description = "Portable interactive film game generator: story.json -> local HTML game + optional image-to-video synthesis"
+version = "0.2.0"
+description = "IP-GAME interactive film skill: SOP prompts, assets, prototype videos, verification, and offline HTML"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }

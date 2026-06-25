@@ -1,176 +1,168 @@
 ---
 name: ip-game
-description: Create and package IP-GAME interactive film games from story.json and ui.json. Use when Codex needs to build 互动影游 or 剧情游戏 projects, follow the 6-step user-question SOP, generate character and node image prompts, choose role/node/video asset sources, synthesize local mp4 node videos from still images, build offline game.html, or verify assets.
+description: Create and package IP-GAME interactive film games from story.json and ui.json. Use for 互动影游, 剧情游戏, 一键互动影游, character-consistent scene/video prompts, node videos, offline game.html, or IP-GAME SOP delivery.
 ---
 
-# IP-GAME（Codex 标准 Skill）
+# IP-GAME
 
-IP-GAME 的核心不是“直接替你调用 AI 生图/生视频”，而是一套**本地可落地的工具链**：把 `story.json/ui.json` 组织成可试玩的 `game.html`，并提供“提示词生成 + 静态图合成视频 + 资产自检”的闭环，让你在任何平台都能按同一套流程跑通。
+IP-GAME 是一条“互动影游制作流水线”技能，不只是把 `story.json` 拼成网页。正确使用时，必须从剧本确认、角色一致性、节点图片、视频来源、主题包装到资产自检完整走完，并且清楚标记当前交付是 `prototype` 还是 `final`。
 
-运行入口：CLI 命令 `ip-game`。当前仓库版本：`0.1.1`。平台：Windows / macOS / Linux。默认安全边界：不触网、不内置密钥、输出只写项目目录。
+运行入口：`ip-game` CLI。当前仓库版本：`0.2.0`。默认安全边界：不内置密钥；本地 CLI 默认不触网；所有输出写入项目目录。
 
----
+## 必须先读
+
+- 对话 SOP：`INTERACTION.md`
+- 可选视频 API 配置说明：`providers/video.provider.json`
+
+如果用户要求“用 IP-GAME 做一个互动影游”，先按 `INTERACTION.md` 的 6 步流程执行。除非用户明确要求跳过，否则不要直接生成网页。
 
 ## 工作机制
 
-1. 读取 `story.json / ui.json`
-2. 给角色生成“定妆多视角提示词”（不限物种，支持“本地角色图优先”）
-3. 给每个剧情节点生成：
-   - 场景图 prompt
-   - 九宫格分镜图 prompt
-4. 按素材路径补齐 `sceneImage / storyboardImage / videoRefImage / video`
-5. 用本地 ffmpeg 把静态图合成为节点 `mp4`（可选，不触网）
-6. 把剧情、UI、素材路径打包成可离线试玩的 `game.html`
-7. 用 `verify` 检查图片/视频是否缺失或不可播放
+1. 接收一句话故事、短剧本或完整设定。
+2. 信息不足时只做一次 8 问补充；用户允许 AI 默认后继续。
+3. 先交付并确认结构化剧本：梗概、角色小传、服化道、路线图、节点清单、主题色建议。
+4. 角色图先行：必须确认角色图来源，生成或整理角色定妆图后，再进入节点图。
+5. 节点图：每个节点至少规划 `sceneImage` 和 `storyboardImage` 两类图，比例必须全链路一致。
+6. 视频：让用户选择视频 API、本地已有视频、或本地静态合成。静态合成只能视为测试/保底，不能冒充高质量成片。
+7. 生成 `game.html`，内含开场海报、播放页、分支选择、路线图、章节跳转、结局页、TTS 开关和本地素材引用。
+8. 运行 `verify` 检查图片、视频、比例、可播放性和最终交付风险。
 
----
+## 质量分层
 
-## 你必须保留的“选择路径”
+- `prototype`：允许用静态图合成视频或占位素材，目标是跑通流程和试玩交互。
+- `final`：必须有可读图片、同一比例、角色参考图、可播放视频；视频过小会被 `verify` 标记为疑似低质。
 
-本仓库本身不强绑定任何云端 API，但 **Skill 标准流程必须向用户提供这些选择**（你的平台/Agent 需要在对话里问清楚）：
+不要把 `prototype` 结果说成最终成品。发生 API 不可用、缺图、缺视频时，可以降级继续，但必须告诉用户降级到了哪一级、缺什么、补什么能到 `final`。
 
-对话式流程与“问用户的问题模板”已固化在 `INTERACTION.md`，建议平台直接照此执行（6 次询问体系）。
+## 资产与字段约定
 
-### 角色图来源（二选一，强制确认）
-1. `直接生成`：用你平台的生图能力生成角色定妆图
-2. `使用本地已有角色图`：用户已有角色三视图/设定图/参考图（此时必须优先本地素材，禁止重新设计角色）
-
-### 节点场景图与故事板图来源（二选一，强制确认）
-1. `直接生成`：用你平台的生图能力生成 `sceneImage` 与 `storyboardImage`
-2. `使用本地已有图片`：用户提供节点图片素材（直接映射路径）
-
-### 视频来源（三选一，强制确认）
-1. `视频 API 生成`：由平台侧执行（仓库不内置 provider；密钥不得入库）
-2. `使用本地已有视频`：用户提供 mp4（直接放到 `assets/videos/`）
-3. `静态图合成视频`：使用本仓库 `make-videos` 在本地合成 mp4（推荐测试/保底）
-
----
-
-## 输入与输出约定
-
-### 输入（项目目录）
+项目目录：
 
 ```text
 <project>/
   story.json
-  ui.json                 # 可选；缺省时仍可 build-html
+  ui.json
   assets/
     images/
+      characters/
       scenes/
       storyboards/
       endings/
+    prompts/
       characters/
     videos/
+  game.html
 ```
 
-### 输出
+重要字段：
 
-- `<project>/game.html`
-- `<project>/assets/videos/<节点ID>.mp4`（可选：静态合成生成）
-- `story.json`（可选：执行 generate-* 时会补写提示词与默认路径）
+- `story.meta.questionnaire.aspect_ratio`：`横版16:9` 或 `竖版9:16`，决定图片、视频和网页比例。
+- `story.meta.deliveryTier`：`prototype` 或 `final`。
+- `story.meta.poster`：开场海报。
+- `story.characters[].characterSheetPrompt`：角色定妆图提示词。
+- `story.characters[].referenceImages` / `images`：角色一致性参考图。
+- `story.nodes[].media.sceneImage`：节点主场景图。
+- `story.nodes[].media.storyboardImage`：九宫格连续分镜图。
+- `story.nodes[].media.videoRefImage`：视频生成参考图，默认优先用分镜图。
+- `story.nodes[].media.endingImage`：结局图。
+- `story.nodes[].media.video`：节点视频。
 
----
+## 角色一致性规则
 
-## CLI 工具（唯一入口）
+- 先做角色定妆图，再做节点图。
+- 用户已有角色图时，优先使用本地角色图，不能擅自重新设计。
+- 同一角色在不同节点必须沿用同一身份锚点。
+- 一个角色存在重大造型变化时，要拆成多个状态参考，例如 `jiangchen_daily`、`jiangchen_battle`。
+- 节点提示词必须引用角色参考图路径或参考说明。
 
-安装：
+## 提示词输出
 
-```bash
-pip install .
-```
+生成角色提示词：
 
-命令：
-
-```text
-ip-game build-html <project-dir> [--story story.json] [--ui ui.json]
-ip-game make-videos <project-dir> [--story story.json] [--only N0,E0] [--skip-existing] [--size 1280x720]
-ip-game verify <project-dir> [--story story.json]
-ip-game generate-node-prompts <project-dir> [--story story.json]
-ip-game generate-character-prompts <project-dir> [--story story.json]
-```
-
----
-
-## 流程图（本地工具链）
-
-```mermaid
-flowchart TD
-  A[story.json / ui.json] --> B[generate-character-prompts<br/>角色定妆提示词]
-  A --> C[generate-node-prompts<br/>节点场景/分镜提示词 + 补齐媒体路径]
-  C --> D{视频来源选择}
-  D -->|本地已有视频| E[assets/videos/*.mp4]
-  D -->|静态图合成| F[make-videos<br/>scene+storyboard -> mp4]
-  D -->|视频API生成| G[平台外部生成 mp4]
-  B --> H[平台外部生角色图/或使用本地角色图]
-  H --> I[平台外部生节点图/或使用本地节点图]
-  I --> F
-  E --> J[build-html -> game.html]
-  F --> J
-  G --> J
-  J --> K[verify]
-```
-
----
-
-## “节点提示词”清单（给平台对接用）
-
-这些提示词不是固定文本，而是**公式/模板**，由仓库命令生成并写回 `story.json`，供你平台调用外部生图能力时直接取用。
-
-### 节点：角色定妆提示词
-
-命令：
 ```bash
 ip-game generate-character-prompts <project-dir>
 ```
 
-写入位置：
+写入：
+
 - `story.json.characters[].characterSheetPrompt`
-- `assets/prompts/characters/<角色ID>_sheet.txt`（如果你项目保留此目录）
+- `assets/prompts/characters/<角色ID>_sheet.txt`
 
-模板文件（不限物种）：
-- `src/ip_game/prompts/character_sheet_prompt_template.md`
+生成节点提示词：
 
-### 节点：剧情节点场景图提示词（scenePrompt）
-
-命令：
 ```bash
 ip-game generate-node-prompts <project-dir>
 ```
 
-写入位置：
+写入：
+
 - `story.json.nodes[].media.scenePrompt`
-
-生成规则（摘要）：
-- 读取 `meta.questionnaire` 的风格/情绪/比例
-- 若节点配置了 `node.characterRefs`，会把角色的 `referenceImages/images.*` 写入提示词，强化“本地角色图优先”
-
-### 节点：九宫格分镜提示词（storyboardPrompt）
-
-写入位置：
 - `story.json.nodes[].media.storyboardPrompt`
+- `assets/prompts/<节点ID>_scene.txt`
+- `assets/prompts/<节点ID>_storyboard.txt`
 
-约束要点（摘要）：
-- 单张 3×3 九宫格
-- 不能出现任何可读文字/编号
-- 角色必须一致
-- 若角色存在本地参考图，必须优先沿用（写入提示词）
+提示词标准：
 
----
+- 角色图：左侧脸部近景、中间全身三视图、右侧多表情头像，明亮清晰，无文字。
+- 场景图：电影感主场景，角色全身或大半身，不裁头脚，身份一致。
+- 分镜图：一张图内包含 3x3 连续关键帧，左侧保留角色/道具参考区，画面无文字、编号、水印。
 
-## 安全机制
+## 视频来源
 
-- 不内置密钥，不接受把任何 token/key 写入仓库
-- 默认不触网：CLI 只处理本地文件
-- 输出范围受控：只写 `<project>/` 内的 `game.html`、`assets/videos/`、以及 `story.json` 的补写字段
-- `verify` 作为交付前最后防线：发现缺图、0 字节视频、视频不可播放等问题
+必须让用户选择：
 
----
+1. 视频 API 生成：可参考 `providers/video.provider.json`。必须由用户明确确认，密钥只放环境变量，不进仓库。
+2. 本地已有视频：用户提供 mp4，放入 `assets/videos/` 并写入 `story.json`。
+3. 静态图合成视频：使用本地 `make-videos`，适合预览和测试，不代表最终画质。
 
-## 关键文件索引
+本地合成：
 
-- `SKILL.md`：本文件，Codex 标准入口
-- `src/ip_game/cli.py`：CLI 入口（`ip-game`）
-- `src/ip_game/node_prompts.py`：节点提示词生成 + 媒体路径补齐
-- `src/ip_game/video_from_images.py`：静态图合成视频（本地 ffmpeg）
-- `src/ip_game/html_build.py`：打包生成 `game.html`
-- `src/ip_game/asset_verify.py`：资产自检
+```bash
+ip-game make-videos <project-dir> --skip-existing
+```
+
+## 打包与验证
+
+生成网页：
+
+```bash
+ip-game build-html <project-dir>
+```
+
+验证：
+
+```bash
+ip-game verify <project-dir>
+```
+
+最终交付前必须验证。若 `verify` 失败，先列出缺失/低质资产和修复建议，再决定是否继续交付原型。
+
+## HTML 交付标准
+
+`game.html` 应支持：
+
+- 开场海报页和开始按钮。
+- 首次进入引导弹窗。
+- 节点视频播放，结束后显示选择。
+- 结局页和结局图。
+- 路线图/章节跳转。
+- 重播当前节点、回到开场、重新开始。
+- 声音/TTS 开关，避免和视频原声冲突。
+- 纯本地相对路径，不给本地文件添加缓存参数。
+
+## CLI 命令
+
+```text
+ip-game build-html <project-dir> [--story story.json] [--ui ui.json]
+ip-game generate-character-prompts <project-dir> [--story story.json]
+ip-game generate-node-prompts <project-dir> [--story story.json]
+ip-game make-videos <project-dir> [--story story.json] [--only N0,E0] [--skip-existing] [--size 1280x720]
+ip-game verify <project-dir> [--story story.json]
+```
+
+## 安全要求
+
+- 不提交任何 token、API key、Cookie 或个人凭据。
+- 视频 API provider 只能写配置结构和环境变量名。
+- 不因为 API 失败而中断整个流程，可以降级，但必须透明说明。
+- 不覆盖用户已有素材，除非用户明确要求。

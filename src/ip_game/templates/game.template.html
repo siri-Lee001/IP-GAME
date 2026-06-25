@@ -11,84 +11,202 @@
         --text:#eef2ff;
         --muted:rgba(238,242,255,.75);
         --primary:#7c3aed;
+        --primary2:#22c55e;
+        --danger:#ef4444;
         --radius:16px;
-        --maxw: 980px;
+        --shadow:0 18px 48px rgba(0,0,0,.42);
+        --maxw:980px;
       }
       *{ box-sizing:border-box; }
       body{
         margin:0;
-        font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "PingFang SC","Microsoft YaHei", sans-serif;
-        background: radial-gradient(1200px 800px at 30% 10%, rgba(124,58,237,.25), transparent 60%), var(--bg);
-        color:var(--text);
         min-height:100vh;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        padding:24px;
+        color:var(--text);
+        font-family:ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "PingFang SC","Microsoft YaHei", sans-serif;
+        background:
+          radial-gradient(900px 560px at 15% 0%, color-mix(in srgb, var(--primary) 35%, transparent), transparent 68%),
+          radial-gradient(880px 540px at 90% 10%, color-mix(in srgb, var(--primary2) 24%, transparent), transparent 66%),
+          var(--bg);
       }
-      .app{ width:min(var(--maxw), 100%); }
-      .card{ background:var(--panel); border:1px solid rgba(255,255,255,.08); border-radius:var(--radius); overflow:hidden; }
-      header{ padding:14px 16px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,.08); }
-      header .t{ font-weight:900; }
-      header .s{ font-size:12px; color:var(--muted); }
-      main{ padding:16px; }
-      .videoWrap{ background:#000; border-radius:14px; overflow:hidden; border:1px solid rgba(255,255,255,.10); }
+      .shell{ width:min(var(--maxw), calc(100vw - 28px)); margin:0 auto; padding:18px 0 28px; }
+      .topbar{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px; }
+      .brand{ min-width:0; }
+      .brandTitle{ font-weight:950; font-size:18px; line-height:1.25; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+      .brandSub{ margin-top:3px; font-size:12px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+      .actions{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
+      button{
+        cursor:pointer;
+        border:1px solid rgba(255,255,255,.15);
+        border-radius:12px;
+        padding:10px 14px;
+        font-weight:850;
+        color:var(--text);
+        background:rgba(255,255,255,.10);
+      }
+      button:hover{ border-color:rgba(255,255,255,.28); background:rgba(255,255,255,.14); }
+      button.primary{
+        border:0;
+        background:linear-gradient(135deg, var(--primary), var(--primary2));
+        color:white;
+        box-shadow:0 12px 26px color-mix(in srgb, var(--primary) 28%, transparent);
+      }
+      button.linkBtn{ padding:8px 10px; font-size:13px; background:rgba(0,0,0,.16); }
+      .panel{ background:var(--panel); border:1px solid rgba(255,255,255,.09); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; }
+      .home{ display:grid; grid-template-columns:minmax(0,1fr); gap:18px; }
+      .heroText{ padding:18px 18px 0; }
+      .pill{ display:inline-flex; align-items:center; gap:8px; font-size:12px; color:var(--muted); padding:6px 10px; border:1px solid rgba(255,255,255,.11); border-radius:999px; background:rgba(0,0,0,.18); }
+      h1{ font-size:clamp(30px, 5vw, 56px); line-height:1.05; margin:14px 0 10px; letter-spacing:0; }
+      .synopsis{ color:var(--muted); line-height:1.75; margin:0; max-width:75ch; }
+      .heroBtns{ display:flex; gap:10px; flex-wrap:wrap; margin-top:16px; }
+      .posterWrap{ position:relative; background:#05070b; border-top:1px solid rgba(255,255,255,.08); overflow:hidden; }
+      .posterWrap.landscape{ aspect-ratio:16/9; }
+      .posterWrap.portrait{ aspect-ratio:9/16; max-height:76vh; width:min(430px,100%); margin:0 auto; border-left:1px solid rgba(255,255,255,.08); border-right:1px solid rgba(255,255,255,.08); }
+      .posterWrap img{ width:100%; height:100%; object-fit:contain; display:block; }
+      .posterFallback{ min-height:320px; display:grid; place-items:center; text-align:center; padding:24px; color:var(--muted); }
+      .posterFallback .big{ color:var(--text); font-size:34px; font-weight:950; margin-bottom:8px; }
+      .playView{ display:none; }
+      .videoWrap{ background:#000; border-radius:0; overflow:hidden; border-bottom:1px solid rgba(255,255,255,.09); }
       .videoWrap.landscape{ aspect-ratio:16/9; }
-      .videoWrap.portrait{ aspect-ratio:9/16; max-width:420px; margin:0 auto; }
-      video{ width:100%; height:100%; object-fit:contain; display:block; }
-      .nodeTitle{ font-weight:900; margin-top:12px; }
-      .nodeDesc{ margin-top:6px; color:var(--muted); line-height:1.6; }
-      .caption{ margin-top:10px; background:rgba(0,0,0,.30); border:1px solid rgba(255,255,255,.10); border-radius:12px; padding:12px; line-height:1.7; white-space:pre-wrap; }
+      .videoWrap.portrait{ aspect-ratio:9/16; max-height:76vh; width:min(430px,100%); margin:0 auto; border-left:1px solid rgba(255,255,255,.08); border-right:1px solid rgba(255,255,255,.08); }
+      video{ width:100%; height:100%; object-fit:contain; display:block; background:#000; }
+      .nodeBody{ padding:16px 18px 18px; }
+      .nodeMeta{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; color:var(--muted); font-size:12px; margin-bottom:8px; }
+      .nodeTitle{ font-size:24px; font-weight:950; line-height:1.2; margin:0 0 8px; }
+      .nodeDesc{ color:var(--muted); line-height:1.7; margin:0; }
+      .caption{ margin-top:12px; padding:12px; line-height:1.75; white-space:pre-wrap; background:rgba(0,0,0,.28); border:1px solid rgba(255,255,255,.10); border-radius:12px; }
       .choices{ display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; }
-      button{ cursor:pointer; border:1px solid rgba(255,255,255,.14); border-radius:12px; padding:10px 14px; font-weight:800; background:rgba(255,255,255,.10); color:var(--text); }
-      button.primary{ background: linear-gradient(135deg, rgba(124,58,237,1), rgba(124,58,237,.75)); border:0; }
-      .endingImg{ margin-top:12px; width:100%; border-radius:14px; border:1px solid rgba(255,255,255,.10); }
-      .row{ display:flex; gap:10px; flex-wrap:wrap; }
-      .pill{ font-size:12px; padding:6px 10px; border-radius:999px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.10); color:var(--muted); }
-      a{ color:inherit; }
+      .choices:empty{ display:none; }
+      .nodeBtns{ display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; }
+      .endingImg{ margin-top:14px; width:100%; border-radius:14px; border:1px solid rgba(255,255,255,.10); display:none; }
+      .status{ margin-top:10px; color:var(--muted); font-size:13px; display:none; }
+      .modalMask{ display:none; position:fixed; inset:0; z-index:20; background:rgba(0,0,0,.68); padding:20px; overflow:auto; }
+      .modal{ width:min(900px,100%); margin:40px auto; background:#111722; border:1px solid rgba(255,255,255,.12); border-radius:18px; box-shadow:var(--shadow); overflow:hidden; }
+      .modalHead{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 16px; border-bottom:1px solid rgba(255,255,255,.10); }
+      .modalTitle{ font-weight:950; }
+      .modalBody{ padding:16px; }
+      .mapGrid{ display:grid; grid-template-columns:1fr; gap:14px; }
+      .mapCard{ border:1px solid rgba(255,255,255,.10); border-radius:14px; background:rgba(255,255,255,.05); padding:12px; }
+      .mapCardTitle{ font-weight:900; margin-bottom:10px; }
+      .mapLine{ white-space:pre-wrap; color:var(--muted); line-height:1.75; font-size:14px; }
+      .nodeList{ display:grid; gap:8px; }
+      .nodeJump{ text-align:left; border-radius:12px; }
+      .nodeJump.current{ outline:2px solid color-mix(in srgb, var(--primary) 75%, white); }
+      .introText{ white-space:pre-wrap; color:var(--muted); line-height:1.8; }
+      .introKpis{ display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+      .introKpis span{ font-size:12px; color:var(--muted); border:1px solid rgba(255,255,255,.10); background:rgba(0,0,0,.18); border-radius:999px; padding:6px 9px; }
+      .introActions{ display:flex; gap:10px; flex-wrap:wrap; margin-top:16px; }
+      @media (min-width: 860px){
+        .home{ grid-template-columns:.9fr 1.1fr; align-items:stretch; }
+        .heroText{ padding:24px; }
+        .posterWrap{ border-top:0; border-left:1px solid rgba(255,255,255,.08); }
+        .mapGrid{ grid-template-columns:.9fr 1.1fr; }
+      }
     </style>
   </head>
   <body>
-    <div class="app">
-      <div class="card">
-        <header>
-          <div>
-            <div class="t">__TITLE__</div>
-            <div class="s">__TAGLINE__</div>
-          </div>
-          <div class="pill" id="pill">离线可玩 · HTML</div>
-        </header>
-        <main>
-          <div id="home">
-            <p style="color:var(--muted);line-height:1.7;max-width:70ch;margin:0 0 14px 0;">__SYNOPSIS__</p>
-            <div class="row">
-              <button class="primary" id="btnStart">开始</button>
-              <button id="btnMap">地图</button>
-            </div>
-          </div>
+    <div class="shell">
+      <div class="topbar">
+        <div class="brand">
+          <div class="brandTitle">__TITLE__</div>
+          <div class="brandSub">__TAGLINE__</div>
+        </div>
+        <div class="actions">
+          <button class="linkBtn" id="btnSound" type="button">开旁白</button>
+          <button class="linkBtn" id="btnMap" type="button">地图</button>
+        </div>
+      </div>
 
-          <div id="play" style="display:none;">
-            <div class="videoWrap landscape" id="videoWrap">
-              <video id="video" controls playsinline preload="metadata"></video>
-            </div>
-            <div class="nodeTitle" id="nodeTitle"></div>
-            <div class="nodeDesc" id="nodeDesc"></div>
-            <div class="caption" id="caption"></div>
-            <div class="choices" id="choices"></div>
-            <img id="endingImg" class="endingImg" style="display:none;" />
-            <div class="row" style="margin-top:14px;">
-              <button id="btnBackHome">回到开头</button>
+      <section class="panel home" id="home">
+        <div class="heroText">
+          <div class="pill" id="pill">离线可玩 · HTML 单文件</div>
+          <h1>__TITLE__</h1>
+          <p class="synopsis">__SYNOPSIS__</p>
+          <div class="heroBtns">
+            <button class="primary" id="btnStart" type="button">开始</button>
+            <button id="btnJump" type="button">选择章节</button>
+          </div>
+        </div>
+        <div class="posterWrap landscape" id="posterWrap">
+          <img id="startPoster" alt="游戏海报" style="display:none;" />
+          <div class="posterFallback" id="posterFallback">
+            <div>
+              <div class="big">IP-GAME</div>
+              <div>等待海报素材</div>
             </div>
           </div>
+        </div>
+      </section>
 
-          <div id="map" style="display:none;">
-            <div style="font-weight:900;margin-bottom:10px;">路线</div>
-            <div id="mapList" style="color:var(--muted);line-height:1.8;"></div>
-            <div class="row" style="margin-top:14px;">
-              <button id="btnCloseMap">返回</button>
+      <section class="panel playView" id="play">
+        <div class="videoWrap landscape" id="videoWrap">
+          <video id="video" controls playsinline preload="auto"></video>
+        </div>
+        <div class="nodeBody">
+          <div class="nodeMeta">
+            <span id="nodeId"></span>
+            <span id="nodeType"></span>
+          </div>
+          <h2 class="nodeTitle" id="nodeTitle"></h2>
+          <p class="nodeDesc" id="nodeDesc"></p>
+          <div class="caption" id="caption"></div>
+          <div class="status" id="status"></div>
+          <img id="endingImg" class="endingImg" alt="结局图" />
+          <div class="choices" id="choices"></div>
+          <div class="nodeBtns">
+            <button id="btnReplayNode" type="button">重新播放本段</button>
+            <button id="btnBackHome" type="button">回到开场</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel playView" id="ending">
+        <div class="nodeBody">
+          <h2 class="nodeTitle" id="endingTitle"></h2>
+          <div class="caption" id="endingText"></div>
+          <img id="endingFinalImg" class="endingImg" alt="结局图" />
+          <div class="nodeBtns">
+            <button class="primary" id="btnRestart" type="button">回到开场</button>
+            <button id="btnReplay" type="button">重播结局</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="modalMask" id="mapMask" aria-hidden="true">
+      <div class="modal">
+        <div class="modalHead">
+          <div class="modalTitle">路线与章节</div>
+          <button class="linkBtn" id="mapClose" type="button">关闭</button>
+        </div>
+        <div class="modalBody">
+          <div class="mapGrid">
+            <div class="mapCard">
+              <div class="mapCardTitle">路线图</div>
+              <div class="mapLine" id="mapRoute"></div>
+            </div>
+            <div class="mapCard">
+              <div class="mapCardTitle">章节列表</div>
+              <div class="nodeList" id="mapNodes"></div>
             </div>
           </div>
-        </main>
+        </div>
+      </div>
+    </div>
+
+    <div class="modalMask" id="introMask" aria-hidden="true">
+      <div class="modal">
+        <div class="modalHead">
+          <div class="modalTitle" id="introTitle">新手引导</div>
+          <button class="linkBtn" id="introClose" type="button">我知道了</button>
+        </div>
+        <div class="modalBody">
+          <div class="introText" id="introText">先播放当前节点视频，播放结束后选择分支。</div>
+          <div class="introKpis" id="introKpis"></div>
+          <div class="introActions">
+            <button class="primary" id="introContinue" type="button">直接开始</button>
+            <button id="introOpenMap" type="button">打开地图</button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -97,108 +215,259 @@
     <script>
       const story = JSON.parse(document.getElementById('__STORY__').textContent);
       const ui = JSON.parse(document.getElementById('__UI__').textContent || '{}');
-      const q = (story.meta && story.meta.questionnaire) || {};
-      const aspect = q.aspect_ratio || '横版16:9';
+      const meta = story.meta || {};
+      const q = meta.questionnaire || {};
+      const theme = ui.theme || {};
+      const colors = theme.colors || {};
+      const features = ui.features || {};
+      const copy = ui.copy || {};
+      const layout = ui.layout || {};
 
-      const homeEl = document.getElementById('home');
-      const playEl = document.getElementById('play');
-      const mapEl = document.getElementById('map');
-      const mapList = document.getElementById('mapList');
-      const videoWrap = document.getElementById('videoWrap');
-      const videoEl = document.getElementById('video');
-      const titleEl = document.getElementById('nodeTitle');
-      const descEl = document.getElementById('nodeDesc');
-      const captionEl = document.getElementById('caption');
-      const choicesEl = document.getElementById('choices');
-      const endingImgEl = document.getElementById('endingImg');
+      const el = {
+        home: document.getElementById('home'),
+        play: document.getElementById('play'),
+        ending: document.getElementById('ending'),
+        pill: document.getElementById('pill'),
+        posterWrap: document.getElementById('posterWrap'),
+        startPoster: document.getElementById('startPoster'),
+        posterFallback: document.getElementById('posterFallback'),
+        videoWrap: document.getElementById('videoWrap'),
+        video: document.getElementById('video'),
+        nodeId: document.getElementById('nodeId'),
+        nodeType: document.getElementById('nodeType'),
+        nodeTitle: document.getElementById('nodeTitle'),
+        nodeDesc: document.getElementById('nodeDesc'),
+        caption: document.getElementById('caption'),
+        status: document.getElementById('status'),
+        choices: document.getElementById('choices'),
+        endingImg: document.getElementById('endingImg'),
+        endingFinalImg: document.getElementById('endingFinalImg'),
+        endingTitle: document.getElementById('endingTitle'),
+        endingText: document.getElementById('endingText'),
+        mapMask: document.getElementById('mapMask'),
+        mapRoute: document.getElementById('mapRoute'),
+        mapNodes: document.getElementById('mapNodes'),
+        introMask: document.getElementById('introMask'),
+        introTitle: document.getElementById('introTitle'),
+        introText: document.getElementById('introText'),
+        introKpis: document.getElementById('introKpis'),
+        btnSound: document.getElementById('btnSound')
+      };
 
-      if (aspect === '竖版9:16') {
-        videoWrap.classList.remove('landscape');
-        videoWrap.classList.add('portrait');
+      for (const key of ['bg','panel','text','muted','primary','primary2','danger']) {
+        if (colors[key]) document.documentElement.style.setProperty('--' + key, colors[key]);
       }
-      // Apply theme color if provided
-      const primary = ui?.theme?.colors?.primary;
-      if (primary) document.documentElement.style.setProperty('--primary', primary);
-      const pillText = ui?.copy?.pill;
-      if (pillText) document.getElementById('pill').textContent = pillText;
+      if (layout.maxWidth) document.documentElement.style.setProperty('--maxw', layout.maxWidth + 'px');
+      if (copy.pill) el.pill.textContent = copy.pill;
 
-      const nodeMap = new Map((story.nodes || []).map(n => [n.id, n]));
-      const startId = story.startNodeId || (story.nodes && story.nodes[0] && story.nodes[0].id);
+      const nodeMap = new Map((story.nodes || []).map(n => [String(n.id), n]));
+      const startId = story.startNodeId || ((story.nodes || [])[0] || {}).id;
+      const storeKey = 'ip-game:' + (meta.title || 'untitled') + ':';
+      const aspect = layout.videoAspectRatio || q.aspect_ratio || '横版16:9';
+      const isPortrait = String(aspect).includes('9:16');
+      const state = { currentNodeId: null, soundOn: false, choicesShown: false };
 
-      function relToAbs(rel){
-        if(!rel) return '';
-        // keep file:// safe: do not append cache bust query
-        return rel;
+      function setArClass(target){
+        target.classList.toggle('portrait', isPortrait);
+        target.classList.toggle('landscape', !isPortrait);
       }
+      setArClass(el.posterWrap);
+      setArClass(el.videoWrap);
 
+      function rel(relPath){ return relPath || ''; }
+      function show(mask){ mask.style.display = 'block'; mask.setAttribute('aria-hidden','false'); }
+      function hide(mask){ mask.style.display = 'none'; mask.setAttribute('aria-hidden','true'); }
       function setStage(stage){
-        homeEl.style.display = stage === 'home' ? '' : 'none';
-        playEl.style.display = stage === 'play' ? '' : 'none';
-        mapEl.style.display  = stage === 'map'  ? '' : 'none';
+        el.home.style.display = stage === 'home' ? '' : 'none';
+        el.play.style.display = stage === 'play' ? 'block' : 'none';
+        el.ending.style.display = stage === 'ending' ? 'block' : 'none';
+      }
+      function captionFor(n){
+        return [n.narration || '', n.dialogue || ''].filter(Boolean).join('\\n') || '（本节点暂无旁白文本）';
+      }
+      function speak(text){
+        if (!state.soundOn || !('speechSynthesis' in window)) return;
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'zh-CN';
+        u.rate = 1;
+        window.speechSynthesis.speak(u);
+      }
+
+      function setupPoster(){
+        const first = nodeMap.get(String(startId)) || (story.nodes || [])[0] || {};
+        const firstMedia = first.media || {};
+        const poster = meta.poster || firstMedia.poster || firstMedia.sceneImage || firstMedia.endingImage;
+        if (!poster) return;
+        el.startPoster.src = rel(poster);
+        el.startPoster.style.display = 'block';
+        el.posterFallback.style.display = 'none';
+        el.startPoster.onerror = () => {
+          el.startPoster.style.display = 'none';
+          el.posterFallback.style.display = 'grid';
+        };
       }
 
       function renderMap(){
         const lines = [];
+        el.mapNodes.innerHTML = '';
         for (const n of (story.nodes || [])) {
-          const cs = (n.choices || []).map(c => `${c.text} -> ${c.to}`).join('；');
-          lines.push(`• ${n.id} ${n.title || ''}${cs ? '：' + cs : ''}`);
+          const choices = (n.choices || []).map(c => `${c.text || c.to} -> ${c.to}`).join('；');
+          lines.push(`• ${n.id} ${n.title || ''}${choices ? '：' + choices : ''}`);
+          const b = document.createElement('button');
+          b.className = 'nodeJump' + (state.currentNodeId === n.id ? ' current' : '');
+          b.textContent = `${n.id} · ${n.title || n.id}`;
+          b.onclick = () => { hide(el.mapMask); playNode(n.id); };
+          el.mapNodes.appendChild(b);
         }
-        mapList.textContent = lines.join('\\n');
+        el.mapRoute.textContent = lines.join('\\n');
+      }
+
+      function renderChoices(n){
+        state.choicesShown = true;
+        el.choices.innerHTML = '';
+        for (const c of (n.choices || [])) {
+          const b = document.createElement('button');
+          b.textContent = c.text || c.to;
+          b.onclick = () => playNode(c.to);
+          el.choices.appendChild(b);
+        }
+      }
+
+      function showStatus(text){
+        el.status.textContent = text || '';
+        el.status.style.display = text ? 'block' : 'none';
       }
 
       function playNode(nodeId){
-        const n = nodeMap.get(nodeId);
-        if(!n){ alert('节点不存在：' + nodeId); return; }
+        const n = nodeMap.get(String(nodeId));
+        if (!n) { alert('节点不存在：' + nodeId); return; }
+        state.currentNodeId = n.id;
+        state.choicesShown = false;
+        try { localStorage.setItem(storeKey + 'lastNode', n.id); } catch (_) {}
         setStage('play');
-        endingImgEl.style.display = 'none';
-        endingImgEl.src = '';
-        choicesEl.innerHTML = '';
-
-        titleEl.textContent = n.title || n.id;
-        descEl.textContent = n.description || '';
-        const cap = [n.narration || '', n.dialogue || ''].filter(Boolean).join('\\n');
-        captionEl.textContent = cap || '（无字幕）';
+        showStatus('');
+        el.choices.innerHTML = '';
+        el.endingImg.style.display = 'none';
+        el.endingImg.removeAttribute('src');
+        el.nodeId.textContent = n.id || '';
+        el.nodeType.textContent = n.isEnding ? '结局' : '剧情节点';
+        el.nodeTitle.textContent = n.title || n.id;
+        el.nodeDesc.textContent = n.description || '';
+        const cap = captionFor(n);
+        el.caption.textContent = cap;
+        speak(cap);
 
         const media = n.media || {};
-        const v = relToAbs(media.video);
-        if (v) {
-          videoEl.src = v;
+        const video = rel(media.video);
+        const poster = rel(media.poster || media.sceneImage || media.endingImage);
+        if (poster) el.video.setAttribute('poster', poster); else el.video.removeAttribute('poster');
+        if (video) {
+          el.video.src = video;
+          el.video.load();
+          showStatus('视频播放结束后会显示选项。');
+          const playPromise = el.video.play();
+          if (playPromise && typeof playPromise.catch === 'function') {
+            playPromise.catch(() => {
+              if (n.isEnding) {
+                showStatus('浏览器未允许自动播放，可点击视频播放，也可直接查看结局。');
+                showEnding(n);
+              } else {
+                showStatus('浏览器未允许自动播放，可点击视频播放；已先显示分支，避免卡住。');
+                if (!state.choicesShown) renderChoices(n);
+              }
+            });
+          }
         } else {
-          videoEl.removeAttribute('src');
-        }
-        videoEl.load();
-
-        const renderChoices = () => {
-          choicesEl.innerHTML = '';
-          const choices = n.choices || [];
+          el.video.removeAttribute('src');
+          el.video.load();
           if (n.isEnding) {
-            // Ending: show ending image + text
-            if (media.endingImage) {
-              endingImgEl.src = relToAbs(media.endingImage);
-              endingImgEl.style.display = '';
-            }
-            if (n.endingText) captionEl.textContent = n.endingText;
-            return;
+            showStatus('本结局未配置视频，已直接显示结局。');
+            showEnding(n);
+          } else {
+            showStatus('本节点未配置视频，已直接显示选项。');
+            renderChoices(n);
           }
-          for (const c of choices) {
-            const btn = document.createElement('button');
-            btn.textContent = c.text || c.to;
-            btn.onclick = () => playNode(c.to);
-            choicesEl.appendChild(btn);
-          }
-        };
+        }
 
-        // show choices after playback ends (or immediately if no video)
-        videoEl.onended = renderChoices;
-        videoEl.onerror = renderChoices;
-        if(!v) renderChoices();
+        if (n.isEnding) {
+          if (media.endingImage) {
+            el.endingImg.src = rel(media.endingImage);
+            el.endingImg.style.display = 'block';
+          }
+          if (n.endingText) el.caption.textContent = n.endingText;
+        }
+
+        el.video.onended = () => {
+          showStatus('');
+          if (!n.isEnding) renderChoices(n);
+          else showEnding(n);
+        };
+        el.video.onerror = () => {
+          showStatus('视频缺失或无法播放，已进入可选分支。');
+          if (!n.isEnding) renderChoices(n);
+          else showEnding(n);
+        };
+      }
+
+      function showEnding(n){
+        const media = n.media || {};
+        el.endingTitle.textContent = n.title || '结局';
+        el.endingText.textContent = n.endingText || captionFor(n);
+        const img = rel(media.endingImage || media.poster || media.sceneImage);
+        if (img) {
+          el.endingFinalImg.src = img;
+          el.endingFinalImg.style.display = 'block';
+        } else {
+          el.endingFinalImg.removeAttribute('src');
+          el.endingFinalImg.style.display = 'none';
+        }
+        setStage('ending');
+      }
+
+      function setupIntro(){
+        el.introTitle.textContent = copy.introTitle || '新手引导';
+        el.introText.textContent = copy.introBody || '先播放当前节点视频，播放结束后选择分支。任何时候都可以打开地图跳转章节。';
+        el.introKpis.innerHTML = '';
+        for (const s of (copy.introKpis || ['支持分支跳转','支持章节跳转','缺素材不崩'])) {
+          const span = document.createElement('span');
+          span.textContent = s;
+          el.introKpis.appendChild(span);
+        }
+        if (features.showIntroOnce === false) return;
+        try {
+          if (!localStorage.getItem(storeKey + 'introSeen')) show(el.introMask);
+        } catch (_) {
+          show(el.introMask);
+        }
       }
 
       document.getElementById('btnStart').onclick = () => playNode(startId);
+      document.getElementById('btnJump').onclick = () => { renderMap(); show(el.mapMask); };
+      document.getElementById('btnMap').onclick = () => { renderMap(); show(el.mapMask); };
       document.getElementById('btnBackHome').onclick = () => setStage('home');
-      document.getElementById('btnMap').onclick = () => { renderMap(); setStage('map'); };
-      document.getElementById('btnCloseMap').onclick = () => setStage('home');
+      document.getElementById('btnReplayNode').onclick = () => state.currentNodeId && playNode(state.currentNodeId);
+      document.getElementById('btnRestart').onclick = () => { setStage('home'); };
+      document.getElementById('btnReplay').onclick = () => state.currentNodeId && playNode(state.currentNodeId);
+      document.getElementById('mapClose').onclick = () => hide(el.mapMask);
+      document.getElementById('introClose').onclick = () => { try { localStorage.setItem(storeKey + 'introSeen','1'); } catch (_) {} hide(el.introMask); };
+      document.getElementById('introContinue').onclick = () => { try { localStorage.setItem(storeKey + 'introSeen','1'); } catch (_) {} hide(el.introMask); playNode(startId); };
+      document.getElementById('introOpenMap').onclick = () => { try { localStorage.setItem(storeKey + 'introSeen','1'); } catch (_) {} hide(el.introMask); renderMap(); show(el.mapMask); };
+      el.btnSound.onclick = () => {
+        state.soundOn = !state.soundOn;
+        el.btnSound.textContent = state.soundOn ? '关旁白' : '开旁白';
+        if (!state.soundOn && 'speechSynthesis' in window) window.speechSynthesis.cancel();
+        if (state.soundOn && state.currentNodeId) {
+          const n = nodeMap.get(String(state.currentNodeId));
+          if (n) speak(captionFor(n));
+        }
+      };
+      if (features.showSoundButton === false) el.btnSound.style.display = 'none';
+      if (features.showMapButton === false) document.getElementById('btnMap').style.display = 'none';
+      if (features.showChapterButton === false) document.getElementById('btnJump').style.display = 'none';
+
+      setupPoster();
+      setupIntro();
     </script>
   </body>
 </html>
-

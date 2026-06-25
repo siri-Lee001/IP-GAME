@@ -3,8 +3,8 @@ from setuptools import find_packages, setup
 
 setup(
     name="ip-game",
-    version="0.1.0",
-    description="Portable interactive film game generator: story.json -> local HTML game + optional image-to-video synthesis",
+    version="0.2.0",
+    description="IP-GAME interactive film skill: SOP prompts, assets, prototype videos, verification, and offline HTML",
     package_dir={"": "src"},
     packages=find_packages("src"),
     include_package_data=True,
