@@ -5,7 +5,7 @@ import re
 from pathlib import Path
 
 
-PROMPT_VERSION = "ip-game-character-v1.2"
+PROMPT_VERSION = "ip-game-character-v1.2.1"
 
 
 def normalize_filename(s: str) -> str:
@@ -17,12 +17,18 @@ def infer_kind(ch: dict) -> str:
     text = " ".join(
         [
             str(ch.get("name") or ""),
+            str(ch.get("species") or ""),
+            str(ch.get("roleType") or ""),
             str(ch.get("bio") or ""),
             str(ch.get("appearance") or ""),
             str(ch.get("personality") or ""),
+            str(ch.get("motivation") or ""),
+            str(ch.get("signature") or ""),
         ]
     )
     t = text.lower()
+    if any(k in text for k in ["剑灵", "器灵", "灵体", "法宝", "灵器", "精怪", "精灵"]):
+        return "灵体/神异道具角色"
     if any(k in text for k in ["少女", "男孩", "女孩", "少年", "青年", "中年", "老人", "凡人", "人类", "女子", "男子"]):
         return "人类角色"
     if any(k in text for k in ["鸟", "雀", "鹰", "凤", "鸦"]) or "bird" in t:
