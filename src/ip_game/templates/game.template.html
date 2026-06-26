@@ -18,6 +18,8 @@
         --overlay-card:#223044;
         --overlay-text:#f4f7fc;
         --overlay-muted:#b8c5d8;
+        --display-font:"Noto Serif SC","Source Han Serif SC","Songti SC","STSong",serif;
+        --ui-font:ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "PingFang SC","Microsoft YaHei", sans-serif;
         --radius:16px;
         --shadow:0 18px 48px rgba(0,0,0,.42);
         --maxw:980px;
@@ -27,15 +29,15 @@
         margin:0;
         min-height:100vh;
         color:var(--text);
-        font-family:ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "PingFang SC","Microsoft YaHei", sans-serif;
+        font-family:var(--ui-font);
         background:
           radial-gradient(900px 560px at 15% 0%, color-mix(in srgb, var(--primary) 35%, transparent), transparent 68%),
           radial-gradient(880px 540px at 90% 10%, color-mix(in srgb, var(--primary2) 24%, transparent), transparent 66%),
           var(--bg);
       }
       .shell{ width:min(var(--maxw), calc(100vw - 28px)); margin:0 auto; padding:18px 0 28px; }
-      .topbar{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px; }
-      .brand{ min-width:0; }
+      .topbar{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px; transition:margin .24s ease, opacity .24s ease; }
+      .brand{ min-width:0; transition:opacity .24s ease, transform .24s ease; }
       .brandTitle{ font-weight:950; font-size:18px; line-height:1.25; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
       .brandSub{ margin-top:3px; font-size:12px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
       .actions{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
@@ -45,26 +47,32 @@
         border-radius:12px;
         padding:10px 14px;
         font-weight:850;
-        color:var(--text);
-        background:rgba(255,255,255,.10);
+        color:#f4f8ff;
+        background:rgba(16,23,35,.62);
+        backdrop-filter:blur(14px);
       }
-      button:hover{ border-color:rgba(255,255,255,.28); background:rgba(255,255,255,.14); }
+      button:hover{ border-color:rgba(255,255,255,.28); background:rgba(28,39,57,.82); }
       button.primary{
         border:0;
         background:linear-gradient(135deg, var(--primary), var(--primary2));
         color:white;
         box-shadow:0 12px 26px color-mix(in srgb, var(--primary) 28%, transparent);
       }
-      button.linkBtn{ padding:8px 10px; font-size:13px; background:rgba(0,0,0,.16); }
+      button.linkBtn{ padding:8px 12px; font-size:13px; background:rgba(8,17,27,.48); color:#eff6ff; border-color:rgba(255,255,255,.18); }
       .panel{ background:var(--panel); border:1px solid rgba(255,255,255,.09); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; }
-      .home{ position:relative; min-height:clamp(540px, 76vh, 860px); background:#08111b; }
+      .home{ position:relative; min-height:clamp(620px, 82vh, 940px); background:#08111b; }
       .heroText{
         position:absolute;
-        left:clamp(18px, 3vw, 42px);
-        bottom:clamp(18px, 4vh, 36px);
+        left:clamp(22px, 4vw, 56px);
+        bottom:clamp(22px, 5vh, 48px);
         z-index:2;
-        width:min(560px, calc(100% - 36px));
-        padding:0;
+        width:min(620px, calc(100% - 44px));
+        padding:26px 26px 24px;
+        border-radius:28px;
+        border:1px solid rgba(255,255,255,.10);
+        background:linear-gradient(180deg, rgba(6,12,21,.18), rgba(6,12,21,.42) 44%, rgba(6,12,21,.72));
+        backdrop-filter:blur(22px);
+        box-shadow:0 22px 62px rgba(0,0,0,.32);
       }
       .pill{
         display:inline-flex;
@@ -78,26 +86,27 @@
         background:rgba(8,17,27,.48);
         backdrop-filter:blur(18px);
       }
-      h1{
-        font-size:clamp(42px, 6vw, 86px);
-        line-height:.95;
-        margin:16px 0 14px;
+      .heroTitle{
+        font-family:var(--display-font);
+        font-size:min(clamp(36px, 5vw, 78px), var(--hero-title-size, 78px));
+        line-height:.98;
+        margin:18px 0 14px;
         letter-spacing:0;
         color:#f8fbff;
-        text-shadow:0 10px 28px rgba(0,0,0,.34);
+        text-shadow:0 14px 34px rgba(0,0,0,.34);
+        text-wrap:balance;
+        max-width:min(var(--hero-title-measure, 12ch), 100%);
+        overflow-wrap:anywhere;
       }
-      .synopsis{
+      .heroLead{
         color:rgba(244,248,255,.92);
-        line-height:1.72;
+        line-height:1.82;
         margin:0;
-        max-width:54ch;
-        padding:14px 16px;
-        border-radius:16px;
-        border:1px solid rgba(255,255,255,.10);
-        background:rgba(8,17,27,.34);
-        backdrop-filter:blur(16px);
+        max-width:42ch;
+        font-size:15px;
+        text-shadow:0 6px 20px rgba(0,0,0,.20);
       }
-      .heroBtns{ display:flex; gap:10px; flex-wrap:wrap; margin-top:16px; }
+      .heroBtns{ display:flex; gap:10px; flex-wrap:wrap; margin-top:18px; }
       .heroBtns button{
         color:#f6fbff;
         background:rgba(8,17,27,.52);
@@ -115,7 +124,7 @@
       }
       .posterWrap{
         position:relative;
-        min-height:clamp(540px, 76vh, 860px);
+        min-height:clamp(620px, 82vh, 920px);
         background:#05070b;
         overflow:hidden;
         border-top:0;
@@ -125,8 +134,8 @@
         position:absolute;
         inset:0;
         background:
-          linear-gradient(90deg, rgba(8,17,27,.82) 0%, rgba(8,17,27,.56) 28%, rgba(8,17,27,.16) 58%, rgba(8,17,27,.20) 100%),
-          linear-gradient(0deg, rgba(8,17,27,.58) 0%, rgba(8,17,27,0) 36%);
+          linear-gradient(90deg, rgba(8,17,27,.86) 0%, rgba(8,17,27,.58) 30%, rgba(8,17,27,.18) 60%, rgba(8,17,27,.22) 100%),
+          linear-gradient(0deg, rgba(8,17,27,.64) 0%, rgba(8,17,27,.10) 34%, rgba(8,17,27,0) 52%);
         pointer-events:none;
       }
       .posterWrap.landscape{ aspect-ratio:auto; }
@@ -146,24 +155,105 @@
         color:rgba(244,248,255,.82);
       }
       .posterFallback .big{ color:#f8fbff; font-size:34px; font-weight:950; margin-bottom:8px; }
-      .playView{ display:none; }
+      .playView{
+        display:none;
+        background:linear-gradient(180deg, rgba(14,20,31,.96), rgba(9,14,24,.98));
+        border-color:rgba(255,255,255,.08);
+      }
       .videoWrap{ background:#000; border-radius:0; overflow:hidden; border-bottom:1px solid rgba(255,255,255,.09); }
       .videoWrap.landscape{ aspect-ratio:16/9; }
       .videoWrap.portrait{ aspect-ratio:9/16; max-height:76vh; width:min(430px,100%); margin:0 auto; border-left:1px solid rgba(255,255,255,.08); border-right:1px solid rgba(255,255,255,.08); }
       video{ width:100%; height:100%; object-fit:contain; display:block; background:#000; }
-      .nodeBody{ padding:16px 18px 18px; }
-      .nodeMeta{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; color:var(--muted); font-size:12px; margin-bottom:8px; }
-      .nodeTitle{ font-size:24px; font-weight:950; line-height:1.2; margin:0 0 8px; }
-      .nodeDesc{ color:var(--muted); line-height:1.7; margin:0; }
-      .caption{ margin-top:12px; padding:12px; line-height:1.75; white-space:pre-wrap; background:rgba(0,0,0,.28); border:1px solid rgba(255,255,255,.10); border-radius:12px; }
-      .choices{ display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; }
+      .nodeBody{
+        padding:24px 24px 28px;
+        background:
+          radial-gradient(620px 280px at 100% 0%, rgba(47,163,107,.08), transparent 64%),
+          linear-gradient(180deg, rgba(15,22,34,.88), rgba(11,17,27,.98));
+      }
+      .nodeMeta{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; color:#d4e0ef; font-size:12px; margin-bottom:10px; }
+      .nodeMeta span{
+        display:inline-flex;
+        align-items:center;
+        padding:6px 10px;
+        border-radius:999px;
+        background:rgba(255,255,255,.05);
+        border:1px solid rgba(255,255,255,.10);
+      }
+      .nodeTitle{ font-size:clamp(28px, 3vw, 40px); font-weight:950; line-height:1.08; margin:0 0 10px; color:#f8fbff; }
+      .nodeDesc{ color:#dbe6f2; line-height:1.78; margin:0; font-size:18px; max-width:68ch; }
+      .captionCard{
+        margin-top:18px;
+        border:1px solid rgba(255,255,255,.08);
+        border-radius:18px;
+        background:rgba(255,255,255,.04);
+        overflow:hidden;
+      }
+      .sectionEyebrow{
+        padding:14px 16px 0;
+        font-size:12px;
+        font-weight:800;
+        letter-spacing:.08em;
+        color:#aebfd6;
+      }
+      .caption{
+        margin-top:0;
+        padding:12px 16px 16px;
+        line-height:1.88;
+        white-space:pre-wrap;
+        background:none;
+        border:0;
+        border-radius:0;
+        color:#f3f7fd;
+        font-size:17px;
+      }
+      .choicesPanel{
+        display:none;
+        margin-top:20px;
+        padding:18px;
+        border-radius:20px;
+        border:1px solid rgba(255,255,255,.10);
+        background:
+          radial-gradient(520px 240px at 0% 0%, rgba(47,163,107,.10), transparent 60%),
+          linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+      }
+      .choicesPanel.visible{ display:block; }
+      .choicesLabel{ font-size:19px; font-weight:900; color:#f8fbff; }
+      .choicesHint{ margin-top:6px; font-size:14px; line-height:1.6; color:#bfd0e2; }
+      .choices{
+        display:grid;
+        gap:12px;
+        margin-top:16px;
+      }
       .choices:empty{ display:none; }
-      .nodeBtns{ display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; }
+      .choices button{
+        width:100%;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:14px;
+        text-align:left;
+        padding:16px 18px;
+        border-radius:16px;
+        border:1px solid rgba(255,255,255,.12);
+        background:rgba(255,255,255,.06);
+        font-size:16px;
+        font-weight:900;
+      }
+      .choices button::after{
+        content:"进入";
+        flex:0 0 auto;
+        font-size:12px;
+        font-weight:800;
+        color:#d9e9fb;
+        opacity:.86;
+      }
+      .nodeBtns{ display:flex; gap:10px; flex-wrap:wrap; margin-top:16px; }
+      .nodeBtns button{ background:rgba(255,255,255,.04); border-color:rgba(255,255,255,.10); }
       .endingImg{ margin-top:14px; width:100%; border-radius:14px; border:1px solid rgba(255,255,255,.10); display:none; }
-      .status{ margin-top:10px; color:var(--muted); font-size:13px; display:none; }
+      .status{ margin-top:12px; color:#bacee2; font-size:13px; display:none; }
       .modalMask{ display:none; position:fixed; inset:0; z-index:20; background:rgba(0,0,0,.68); padding:20px; overflow:auto; }
       .modal{
-        width:min(1120px,100%);
+        width:min(1360px,100%);
         margin:34px auto;
         background:
           radial-gradient(780px 420px at 0% 0%, rgba(47,163,107,.12), transparent 62%),
@@ -192,82 +282,115 @@
         background:rgba(255,255,255,.08);
         border-color:rgba(255,255,255,.18);
       }
-      .mapGrid{ display:grid; grid-template-columns:1fr; gap:14px; }
-      .mapCard{
+      .mapOverviewStage{ display:flex; justify-content:center; padding:4px 0 20px; }
+      .mapOverviewFrame{
+        width:min(100%, 1240px);
         border:1px solid rgba(255,255,255,.08);
-        border-radius:18px;
+        border-radius:24px;
         background:rgba(255,255,255,.04);
+        overflow:hidden;
+        box-shadow:0 18px 46px rgba(0,0,0,.22);
+      }
+      .mapOverviewImage{
+        display:block;
+        width:100%;
+        height:auto;
+        background:#0d1420;
+      }
+      .mapOverviewFallback{
+        display:none;
+        min-height:340px;
+        place-items:center;
+        padding:28px;
+        text-align:center;
+        color:var(--overlay-muted);
+        line-height:1.8;
+      }
+      .mapJumpPanel{
+        width:min(100%, 1240px);
+        margin:0 auto;
+        border:1px solid rgba(255,255,255,.08);
+        border-radius:20px;
+        background:rgba(255,255,255,.04);
+        overflow:hidden;
+      }
+      .mapJumpHead{
+        padding:16px 18px 14px;
+        border-bottom:1px solid rgba(255,255,255,.08);
+      }
+      .mapJumpTitle{ font-size:18px; font-weight:900; color:var(--overlay-text); }
+      .mapJumpSub{ margin-top:6px; color:var(--overlay-muted); font-size:13px; line-height:1.6; }
+      .mapJumpList{
+        display:grid;
+        grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+        gap:12px;
         padding:16px;
       }
-      .mapCardTitle{ font-weight:900; margin-bottom:12px; font-size:18px; color:var(--overlay-text); }
-      .mapLine{ color:var(--overlay-muted); font-size:14px; }
-      .routeStack{ display:grid; gap:10px; }
-      .routeStep{
-        border:1px solid rgba(255,255,255,.08);
+      .mapJumpBtn{
+        text-align:left;
+        border:1px solid rgba(255,255,255,.10);
         border-radius:16px;
         background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
-        padding:14px;
+        padding:14px 16px;
+        color:var(--overlay-text);
       }
-      .routeStep.current{
-        background:linear-gradient(180deg, color-mix(in srgb, var(--primary) 16%, rgba(255,255,255,.06)), rgba(255,255,255,.03));
-        border-color:color-mix(in srgb, var(--primary) 40%, rgba(255,255,255,.10));
+      .mapJumpBtn:hover{
+        border-color:rgba(255,255,255,.18);
+        background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
       }
-      .routeStepHead{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
-      .routeStepTitle{ font-weight:850; color:var(--overlay-text); font-size:15px; }
-      .routeBadge, .nodeChip{
+      .mapJumpBtn.current{
+        border-color:color-mix(in srgb, var(--primary) 44%, rgba(255,255,255,.10));
+        background:linear-gradient(180deg, color-mix(in srgb, var(--primary) 14%, rgba(255,255,255,.06)), rgba(255,255,255,.03));
+      }
+      .mapJumpTop{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+      .mapJumpName{ font-size:17px; font-weight:900; line-height:1.3; color:var(--overlay-text); }
+      .mapJumpMeta{
         display:inline-flex;
         align-items:center;
-        padding:5px 9px;
+        padding:5px 8px;
         border-radius:999px;
-        font-size:11px;
-        font-weight:800;
         border:1px solid rgba(255,255,255,.12);
         background:rgba(255,255,255,.06);
         color:var(--overlay-text);
+        font-size:11px;
+        font-weight:800;
       }
-      .routeStepMeta{ margin-top:8px; color:var(--overlay-muted); line-height:1.72; font-size:13px; }
-      .routeChoices{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
-      .routeChoice{
-        display:inline-flex;
-        align-items:center;
-        gap:6px;
-        font-size:12px;
-        line-height:1.4;
-        color:#f8fbff;
-        padding:7px 10px;
-        border-radius:999px;
-        border:1px solid rgba(47,163,107,.32);
-        background:rgba(47,163,107,.16);
-      }
-      .routeChoice.end{ border-color:rgba(242,140,40,.28); background:rgba(242,140,40,.14); }
-      .nodeList{ display:grid; gap:10px; }
-      .nodeJump{
-        display:flex;
-        flex-direction:column;
-        align-items:flex-start;
-        gap:8px;
-        text-align:left;
-        border-radius:16px;
-        padding:14px 16px;
-        color:var(--overlay-text);
-        background:rgba(255,255,255,.05);
-        border:1px solid rgba(255,255,255,.08);
-      }
-      .nodeJump:hover{
-        border-color:rgba(255,255,255,.18);
-        background:rgba(255,255,255,.08);
-      }
-      .nodeJump.current{
-        outline:2px solid color-mix(in srgb, var(--primary) 75%, white);
-        background:color-mix(in srgb, var(--primary) 14%, rgba(255,255,255,.06));
-      }
-      .nodeJumpTitle{ font-weight:900; font-size:16px; color:var(--overlay-text); }
-      .nodeJumpMeta{ display:flex; flex-wrap:wrap; gap:8px; color:var(--overlay-muted); font-size:12px; }
-      .nodeJumpDesc{ color:var(--overlay-muted); font-size:13px; line-height:1.65; }
+      .mapJumpDesc{ margin-top:10px; color:var(--overlay-muted); font-size:13px; line-height:1.65; }
       .introText{ white-space:pre-wrap; color:var(--muted); line-height:1.8; }
       .introKpis{ display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
       .introKpis span{ font-size:12px; color:var(--muted); border:1px solid rgba(255,255,255,.10); background:rgba(0,0,0,.18); border-radius:999px; padding:6px 9px; }
       .introActions{ display:flex; gap:10px; flex-wrap:wrap; margin-top:16px; }
+      body[data-stage="home"] .topbar{
+        position:relative;
+        z-index:4;
+        margin:0 0 -62px;
+        padding:0 18px;
+      }
+      body[data-stage="home"] .brand{
+        opacity:0;
+        transform:translateY(-6px);
+        pointer-events:none;
+      }
+      body[data-stage="home"] .actions .linkBtn{
+        color:#eef6ff;
+        background:rgba(8,17,27,.56);
+        border-color:rgba(255,255,255,.18);
+        box-shadow:0 10px 28px rgba(0,0,0,.16);
+      }
+      body[data-stage="home"] .actions .linkBtn:hover{
+        background:rgba(14,24,38,.78);
+      }
+      body[data-stage="play"],
+      body[data-stage="ending"]{
+        background:
+          radial-gradient(980px 520px at 10% 0%, rgba(47,163,107,.10), transparent 68%),
+          radial-gradient(860px 480px at 88% 8%, rgba(242,140,40,.10), transparent 70%),
+          #071018;
+      }
+      body[data-stage="play"] .brandTitle,
+      body[data-stage="ending"] .brandTitle{ color:#f7fbff; }
+      body[data-stage="play"] .brandSub,
+      body[data-stage="ending"] .brandSub{ color:#b7c8dc; }
       @media (max-width: 760px){
         .home{ min-height:620px; }
         .heroText{
@@ -275,13 +398,21 @@
           right:18px;
           bottom:18px;
           width:auto;
+          padding:22px 18px 18px;
         }
-        h1{ font-size:clamp(40px, 14vw, 68px); }
-        .synopsis{ max-width:none; }
+        .heroTitle{
+          font-size:min(clamp(32px, 11.8vw, 52px), var(--hero-title-size, 52px));
+          max-width:100%;
+        }
+        .heroLead{ max-width:none; }
         .posterWrap, .posterFallback{ min-height:620px; }
-      }
-      @media (min-width: 860px){
-        .mapGrid{ grid-template-columns:.94fr 1.06fr; }
+        .nodeBody{ padding:20px 16px 24px; }
+        .nodeDesc{ font-size:16px; }
+        .caption{ font-size:16px; }
+        body[data-stage="home"] .topbar{
+          padding:0 14px;
+          margin:0 0 -54px;
+        }
       }
     </style>
   </head>
@@ -301,8 +432,8 @@
       <section class="panel home" id="home">
         <div class="heroText">
           <div class="pill" id="pill">离线可玩 · HTML 单文件</div>
-          <h1>__TITLE__</h1>
-          <p class="synopsis">__SYNOPSIS__</p>
+          <h1 class="heroTitle" id="heroTitle">__TITLE__</h1>
+          <p class="heroLead" id="heroLead">__SYNOPSIS__</p>
           <div class="heroBtns">
             <button class="primary" id="btnStart" type="button">开始</button>
             <button id="btnJump" type="button">选择章节</button>
@@ -330,10 +461,17 @@
           </div>
           <h2 class="nodeTitle" id="nodeTitle"></h2>
           <p class="nodeDesc" id="nodeDesc"></p>
-          <div class="caption" id="caption"></div>
+          <div class="captionCard">
+            <div class="sectionEyebrow">旁白与对白</div>
+            <div class="caption" id="caption"></div>
+          </div>
           <div class="status" id="status"></div>
           <img id="endingImg" class="endingImg" alt="结局图" />
-          <div class="choices" id="choices"></div>
+          <div class="choicesPanel" id="choicesPanel">
+            <div class="choicesLabel">选择下一步</div>
+            <div class="choicesHint" id="choicesHint">视频播放完成后，从下面选择你要进入的剧情分支。</div>
+            <div class="choices" id="choices"></div>
+          </div>
           <div class="nodeBtns">
             <button id="btnReplayNode" type="button">重新播放本段</button>
             <button id="btnBackHome" type="button">回到开场</button>
@@ -357,19 +495,22 @@
     <div class="modalMask" id="mapMask" aria-hidden="true">
       <div class="modal">
         <div class="modalHead">
-          <div class="modalTitle">路线与章节</div>
+          <div class="modalTitle">章节地图</div>
           <button class="linkBtn" id="mapClose" type="button">关闭</button>
         </div>
         <div class="modalBody">
-          <div class="mapGrid">
-            <div class="mapCard">
-              <div class="mapCardTitle">路线图</div>
-              <div class="mapLine" id="mapRoute"></div>
+          <div class="mapOverviewStage">
+            <div class="mapOverviewFrame">
+              <img class="mapOverviewImage" id="mapOverviewImage" alt="游戏路径全览图" style="display:none;" />
+              <div class="mapOverviewFallback" id="mapOverviewFallback">当前项目还没有地图全览图。生成后这里会放大展示。</div>
             </div>
-            <div class="mapCard">
-              <div class="mapCardTitle">章节列表</div>
-              <div class="nodeList" id="mapNodes"></div>
+          </div>
+          <div class="mapJumpPanel">
+            <div class="mapJumpHead">
+              <div class="mapJumpTitle">章节跳转</div>
+              <div class="mapJumpSub">先看上面的全览地图，再从下面直接跳到你想试玩的节点。</div>
             </div>
+            <div class="mapJumpList" id="mapButtons"></div>
           </div>
         </div>
       </div>
@@ -427,13 +568,19 @@
         endingTitle: document.getElementById('endingTitle'),
         endingText: document.getElementById('endingText'),
         mapMask: document.getElementById('mapMask'),
-        mapRoute: document.getElementById('mapRoute'),
-        mapNodes: document.getElementById('mapNodes'),
+        mapOverviewImage: document.getElementById('mapOverviewImage'),
+        mapOverviewFallback: document.getElementById('mapOverviewFallback'),
+        mapButtons: document.getElementById('mapButtons'),
         introMask: document.getElementById('introMask'),
         introTitle: document.getElementById('introTitle'),
         introText: document.getElementById('introText'),
         introKpis: document.getElementById('introKpis'),
-        btnSound: document.getElementById('btnSound')
+        btnSound: document.getElementById('btnSound'),
+        heroTitle: document.getElementById('heroTitle'),
+        heroLead: document.getElementById('heroLead'),
+        brandSub: document.querySelector('.brandSub'),
+        choicesPanel: document.getElementById('choicesPanel'),
+        choicesHint: document.getElementById('choicesHint')
       };
 
       for (const key of ['bg','panel','text','muted','primary','primary2','danger']) {
@@ -460,12 +607,16 @@
       function show(mask){ mask.style.display = 'block'; mask.setAttribute('aria-hidden','false'); }
       function hide(mask){ mask.style.display = 'none'; mask.setAttribute('aria-hidden','true'); }
       function setStage(stage){
+        document.body.dataset.stage = stage;
         el.home.style.display = stage === 'home' ? '' : 'none';
         el.play.style.display = stage === 'play' ? 'block' : 'none';
         el.ending.style.display = stage === 'ending' ? 'block' : 'none';
       }
+      function normalizeText(text){
+        return String(text || '').replace(/\\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
+      }
       function captionFor(n){
-        return [n.narration || '', n.dialogue || ''].filter(Boolean).join('\\n') || '（本节点暂无旁白文本）';
+        return [normalizeText(n.narration), normalizeText(n.dialogue)].filter(Boolean).join('\n\n') || '（本节点暂无旁白文本）';
       }
       function speak(text){
         if (!state.soundOn || !('speechSynthesis' in window)) return;
@@ -491,80 +642,120 @@
       }
 
       function shortText(text, limit = 74){
-        const raw = String(text || '').replace(/\s+/g, ' ').trim();
+        const raw = normalizeText(text).replace(/\s+/g, ' ').trim();
         if (!raw) return '';
         return raw.length > limit ? raw.slice(0, limit - 1) + '…' : raw;
       }
 
-      function renderMap(){
-        el.mapNodes.innerHTML = '';
-        el.mapRoute.innerHTML = '';
-        const routeStack = document.createElement('div');
-        routeStack.className = 'routeStack';
-        for (const n of (story.nodes || [])) {
-          const step = document.createElement('div');
-          step.className = 'routeStep' + (state.currentNodeId === n.id ? ' current' : '');
-          const stepHead = document.createElement('div');
-          stepHead.className = 'routeStepHead';
-          const stepTitle = document.createElement('div');
-          stepTitle.className = 'routeStepTitle';
-          stepTitle.textContent = `${n.id} · ${n.title || n.id}`;
-          const stepBadge = document.createElement('span');
-          stepBadge.className = 'routeBadge';
-          stepBadge.textContent = n.isEnding ? '结局' : '剧情';
-          stepHead.appendChild(stepTitle);
-          stepHead.appendChild(stepBadge);
-          step.appendChild(stepHead);
-
-          const stepMeta = document.createElement('div');
-          stepMeta.className = 'routeStepMeta';
-          stepMeta.textContent = shortText(n.description || n.endingText || captionFor(n), 92);
-          step.appendChild(stepMeta);
-
-          const choices = n.choices || [];
-          if (choices.length) {
-            const choiceWrap = document.createElement('div');
-            choiceWrap.className = 'routeChoices';
-            for (const c of choices) {
-              const target = nodeMap.get(String(c.to));
-              const item = document.createElement('span');
-              item.className = 'routeChoice' + (target && target.isEnding ? ' end' : '');
-              item.textContent = `${c.text || c.to} -> ${target ? (target.title || target.id) : c.to}`;
-              choiceWrap.appendChild(item);
-            }
-            step.appendChild(choiceWrap);
-          }
-          routeStack.appendChild(step);
-
-          const b = document.createElement('button');
-          b.className = 'nodeJump' + (state.currentNodeId === n.id ? ' current' : '');
-          const title = document.createElement('span');
-          title.className = 'nodeJumpTitle';
-          title.textContent = `${n.id} · ${n.title || n.id}`;
-          const meta = document.createElement('span');
-          meta.className = 'nodeJumpMeta';
-          const typeChip = document.createElement('span');
-          typeChip.className = 'nodeChip';
-          typeChip.textContent = n.isEnding ? '结局' : '剧情节点';
-          const countChip = document.createElement('span');
-          countChip.className = 'nodeChip';
-          countChip.textContent = n.isEnding ? '终点' : `${choices.length} 个选项`;
-          meta.appendChild(typeChip);
-          meta.appendChild(countChip);
-          const desc = document.createElement('span');
-          desc.className = 'nodeJumpDesc';
-          desc.textContent = shortText(n.description || n.endingText || captionFor(n), 68);
-          b.appendChild(title);
-          b.appendChild(meta);
-          b.appendChild(desc);
-          b.onclick = () => { hide(el.mapMask); playNode(n.id); };
-          el.mapNodes.appendChild(b);
+      function clampTitle(title, lines = 2, lineLength = 8){
+        const chars = Array.from(String(title || '').trim());
+        if (!chars.length) return ['未命名节点'];
+        const max = lines * lineLength;
+        const clipped = chars.length > max ? chars.slice(0, max - 1).concat('…') : chars;
+        const result = [];
+        for (let i = 0; i < clipped.length; i += lineLength) {
+          result.push(clipped.slice(i, i + lineLength).join(''));
         }
-        el.mapRoute.appendChild(routeStack);
+        return result.slice(0, lines);
+      }
+
+      function fitHeroTitle(){
+        const text = String(el.heroTitle.textContent || '').trim();
+        const length = Array.from(text).length;
+        let size = 78;
+        let measure = '12ch';
+        if (length > 10) size = 70;
+        if (length > 16) { size = 62; measure = '14ch'; }
+        if (length > 24) { size = 54; measure = '16ch'; }
+        if (length > 34) { size = 46; measure = '18ch'; }
+        el.heroTitle.style.setProperty('--hero-title-size', size + 'px');
+        el.heroTitle.style.setProperty('--hero-title-measure', measure);
+      }
+
+      function buildFlowOrder(){
+        const visited = new Set();
+        const ordered = [];
+        function walk(nodeId, depth = 0, viaText = ''){
+          const key = String(nodeId || '');
+          if (!key || visited.has(key)) return;
+          const node = nodeMap.get(key);
+          if (!node) return;
+          visited.add(key);
+          ordered.push({ node, depth, viaText });
+          for (const choice of (node.choices || [])) {
+            walk(choice.to, depth + 1, choice.text || '');
+          }
+        }
+        walk(startId, 0, '');
+        for (const node of (story.nodes || [])) {
+          const key = String(node.id || '');
+          if (key && !visited.has(key)) ordered.push({ node, depth: 0, viaText: '' });
+        }
+        return ordered;
+      }
+
+      function renderMap(){
+        const mapImage = rel(meta.mapOverviewImage || '');
+        const showMapFallback = () => {
+          el.mapOverviewImage.style.display = 'none';
+          el.mapOverviewFallback.style.display = 'grid';
+        };
+        const showMapImage = () => {
+          el.mapOverviewImage.style.display = 'block';
+          el.mapOverviewFallback.style.display = 'none';
+        };
+
+        if (mapImage) {
+          el.mapOverviewImage.onload = showMapImage;
+          el.mapOverviewImage.onerror = showMapFallback;
+          el.mapOverviewImage.src = mapImage;
+          if (el.mapOverviewImage.complete && el.mapOverviewImage.naturalWidth > 0) {
+            showMapImage();
+          }
+        } else {
+          showMapFallback();
+        }
+
+        el.mapButtons.innerHTML = '';
+        for (const item of buildFlowOrder()) {
+          const n = item.node;
+          const choices = n.choices || [];
+          const b = document.createElement('button');
+          b.className = 'mapJumpBtn' + (state.currentNodeId === n.id ? ' current' : '');
+          b.type = 'button';
+
+          const top = document.createElement('div');
+          top.className = 'mapJumpTop';
+
+          const name = document.createElement('div');
+          name.className = 'mapJumpName';
+          name.textContent = `${n.id} · ${n.title || n.id}`;
+
+          const badge = document.createElement('div');
+          badge.className = 'mapJumpMeta';
+          badge.textContent = n.id === startId ? '起点' : (n.isEnding ? '结局' : '剧情');
+
+          top.appendChild(name);
+          top.appendChild(badge);
+          b.appendChild(top);
+
+          const desc = document.createElement('div');
+          desc.className = 'mapJumpDesc';
+          const lead = item.depth && item.viaText ? `由「${item.viaText}」进入` : (n.id === startId ? '故事起点' : '');
+          const summary = shortText(n.description || n.endingText || captionFor(n), 72);
+          const suffix = n.isEnding ? '终局节点' : `${choices.length} 个选择`;
+          desc.textContent = [lead, summary, suffix].filter(Boolean).join(' · ');
+          b.appendChild(desc);
+
+          b.onclick = () => { hide(el.mapMask); playNode(n.id); };
+          el.mapButtons.appendChild(b);
+        }
       }
 
       function renderChoices(n){
         state.choicesShown = true;
+        el.choicesPanel.classList.add('visible');
+        el.choicesHint.textContent = '点击下面的按钮进入下一段剧情。';
         el.choices.innerHTML = '';
         for (const c of (n.choices || [])) {
           const b = document.createElement('button');
@@ -588,12 +779,13 @@
         setStage('play');
         showStatus('');
         el.choices.innerHTML = '';
+        el.choicesPanel.classList.remove('visible');
         el.endingImg.style.display = 'none';
         el.endingImg.removeAttribute('src');
         el.nodeId.textContent = n.id || '';
         el.nodeType.textContent = n.isEnding ? '结局' : '剧情节点';
         el.nodeTitle.textContent = n.title || n.id;
-        el.nodeDesc.textContent = n.description || '';
+        el.nodeDesc.textContent = normalizeText(n.description);
         const cap = captionFor(n);
         el.caption.textContent = cap;
         speak(cap);
@@ -609,15 +801,15 @@
           const playPromise = el.video.play();
           if (playPromise && typeof playPromise.catch === 'function') {
             playPromise.catch(() => {
-              if (n.isEnding) {
-                showStatus('浏览器未允许自动播放，可点击视频播放，也可直接查看结局。');
-                showEnding(n);
-              } else {
-                showStatus('浏览器未允许自动播放，可点击视频播放；已先显示分支，避免卡住。');
-                if (!state.choicesShown) renderChoices(n);
-              }
-            });
-          }
+                if (n.isEnding) {
+                  showStatus('浏览器未允许自动播放，可点击视频播放，也可直接查看结局。');
+                  showEnding(n);
+                } else {
+                  showStatus('浏览器未允许自动播放。你可以点击视频继续播放，或者直接选择下面的分支。');
+                  if (!state.choicesShown) renderChoices(n);
+                }
+              });
+            }
         } else {
           el.video.removeAttribute('src');
           el.video.load();
@@ -625,7 +817,7 @@
             showStatus('本结局未配置视频，已直接显示结局。');
             showEnding(n);
           } else {
-            showStatus('本节点未配置视频，已直接显示选项。');
+            showStatus('本节点未配置视频，已直接显示分支选择。');
             renderChoices(n);
           }
         }
@@ -635,7 +827,7 @@
             el.endingImg.src = rel(media.endingImage);
             el.endingImg.style.display = 'block';
           }
-          if (n.endingText) el.caption.textContent = n.endingText;
+          if (n.endingText) el.caption.textContent = normalizeText(n.endingText);
         }
 
         el.video.onended = () => {
@@ -653,7 +845,7 @@
       function showEnding(n){
         const media = n.media || {};
         el.endingTitle.textContent = n.title || '结局';
-        el.endingText.textContent = n.endingText || captionFor(n);
+        el.endingText.textContent = normalizeText(n.endingText) || captionFor(n);
         const img = rel(media.endingImage || media.poster || media.sceneImage);
         if (img) {
           el.endingFinalImg.src = img;
@@ -667,7 +859,7 @@
 
       function setupIntro(){
         el.introTitle.textContent = copy.introTitle || '新手引导';
-        el.introText.textContent = copy.introBody || '先播放当前节点视频，播放结束后选择分支。任何时候都可以打开地图跳转章节。';
+        el.introText.textContent = normalizeText(copy.introBody) || '先播放当前节点视频，播放结束后选择分支。任何时候都可以打开地图跳转章节。';
         el.introKpis.innerHTML = '';
         for (const s of (copy.introKpis || ['支持分支跳转','支持章节跳转','缺素材不崩'])) {
           const span = document.createElement('span');
@@ -707,6 +899,14 @@
       if (features.showChapterButton === false) document.getElementById('btnJump').style.display = 'none';
 
       setupPoster();
+      const heroLead = normalizeText(el.heroLead.textContent) || normalizeText(el.brandSub.textContent);
+      if (heroLead) {
+        el.heroLead.textContent = heroLead;
+      } else {
+        el.heroLead.style.display = 'none';
+      }
+      fitHeroTitle();
+      setStage('home');
       setupIntro();
     </script>
   </body>

@@ -119,7 +119,7 @@ def build_prompt(meta: dict, ch: dict) -> str:
 def generate_character_prompts(project_dir: Path, story_path: Path | None = None) -> None:
     project_dir = project_dir.resolve()
     story_path = (story_path or (project_dir / "story.json")).resolve()
-    story = json.loads(story_path.read_text(encoding="utf-8"))
+    story = json.loads(story_path.read_text(encoding="utf-8-sig"))
     meta = story.get("meta") or {}
 
     prompt_dir = project_dir / "assets" / "prompts" / "characters"

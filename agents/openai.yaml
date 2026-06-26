@@ -1,4 +1,4 @@
 interface:
   display_name: "IP-GAME"
   short_description: "Build SOP-based interactive film games"
-  default_prompt: "Create an IP-GAME interactive film project from my story idea. Follow INTERACTION.md: confirm script, character references, node images, video source, quality tier, then build and verify the playable game package."
+  default_prompt: "Create an IP-GAME interactive film project from my story idea. Follow INTERACTION.md: confirm script, character references, image assets (including homepage poster and route overview map), video source, quality tier, then build and verify the playable game package."

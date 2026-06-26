@@ -3,7 +3,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="ip-game",
-    version="0.2.0",
+    version="0.3.0",
     description="IP-GAME interactive film skill: SOP prompts, assets, prototype videos, verification, and offline HTML",
     package_dir={"": "src"},
     packages=find_packages("src"),

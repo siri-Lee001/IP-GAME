@@ -7,6 +7,7 @@ from pathlib import Path
 from .asset_verify import verify_project_assets
 from .character_prompts import generate_character_prompts
 from .html_build import build_game_html
+from .map_overview import render_map_overview
 from .node_prompts import generate_node_prompts
 from .video_from_images import make_videos_from_images
 
@@ -56,6 +57,16 @@ def cmd_generate_character_prompts(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_render_map_overview(args: argparse.Namespace) -> int:
+    out = render_map_overview(
+        _p(args.project_dir),
+        story_path=_p(args.story) if args.story else None,
+        out_path=_p(args.out) if args.out else None,
+    )
+    print(out)
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="ip-game", description="IP-GAME CLI: prompts, prototype videos, verification, and offline HTML.")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -88,6 +99,12 @@ def build_parser() -> argparse.ArgumentParser:
     gcp.add_argument("project_dir")
     gcp.add_argument("--story", default=None)
     gcp.set_defaults(func=cmd_generate_character_prompts)
+
+    rmo = sub.add_parser("render-map-overview", help="Render a local fallback route overview image and save its path into story.json")
+    rmo.add_argument("project_dir")
+    rmo.add_argument("--story", default=None)
+    rmo.add_argument("--out", default=None, help="Override output image path (default: <project_dir>/assets/images/map_overview.png)")
+    rmo.set_defaults(func=cmd_render_map_overview)
 
     return p
 

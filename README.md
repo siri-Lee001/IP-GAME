@@ -7,9 +7,9 @@ This repository is designed to be shared as a Codex-style skill or used as a nor
 ## What It Does
 
 - Follows a 6-step interactive film SOP: story, smart questions, script confirmation, character references, node images, video source, final package.
-- Generates character sheet prompts and node scene/storyboard prompts.
+- Generates character sheet prompts, homepage poster prompts, node scene/storyboard prompts, and route overview prompts.
 - Fills standard asset paths in `story.json`.
-- Builds a richer offline `game.html` with poster page, intro modal, route map, node replay, chapter jump, ending page, and TTS toggle.
+- Builds a richer offline `game.html` with poster page, intro modal, centered route overview map, simple chapter jump buttons, node replay, ending page, and TTS toggle.
 - Optionally synthesizes simple local MP4 videos from still images for prototype testing.
 - Verifies images, aspect ratio, videos, and final delivery risk.
 
@@ -55,6 +55,7 @@ Generate prompts and default media paths:
 ```bash
 ip-game generate-character-prompts <project-dir>
 ip-game generate-node-prompts <project-dir>
+ip-game render-map-overview <project-dir>
 ```
 
 Build the playable HTML:
@@ -81,9 +82,21 @@ ip-game verify <project-dir>
 ip-game build-html <project-dir> [--story story.json] [--ui ui.json]
 ip-game generate-character-prompts <project-dir> [--story story.json]
 ip-game generate-node-prompts <project-dir> [--story story.json]
+ip-game render-map-overview <project-dir> [--story story.json] [--out assets/images/map_overview.png]
 ip-game make-videos <project-dir> [--story story.json] [--only N0,E0] [--skip-existing] [--size 1280x720]
 ip-game verify <project-dir> [--story story.json]
 ```
+
+## Built-in Safeguards
+
+Recent hardening focused on preventing the exact problems uncovered during live testing:
+
+- BOM-tolerant JSON loading for `story.json` and `ui.json`, so prompt generation and HTML build do not fail on Windows-exported files.
+- Automatic output of `assets/prompts/home_poster.txt` and `assets/prompts/map_overview.txt`, so homepage poster and route overview are first-class assets instead of ad-hoc fixes.
+- HTML map page now expects a large overview image plus simple jump buttons, rather than an in-page pseudo-flowchart.
+- Verifier now checks `meta.mapOverviewImage` when present.
+- Template normalizes escaped `\\n` text before rendering captions.
+- Repository includes regression tests for prompt generation, BOM handling, map UI structure, and route overview asset verification.
 
 ## Delivery Tiers
 

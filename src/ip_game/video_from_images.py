@@ -26,7 +26,7 @@ def _probe_ffprobe() -> str:
 
 
 def _read_json(path: Path) -> dict:
-    return json.loads(path.read_text(encoding="utf-8"))
+    return json.loads(path.read_text(encoding="utf-8-sig"))
 
 
 def _ensure_dir(p: Path) -> None:

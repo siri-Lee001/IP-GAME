@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ip-game"
-version = "0.2.0"
+version = "0.3.0"
 description = "IP-GAME interactive film skill: SOP prompts, assets, prototype videos, verification, and offline HTML"
 readme = "README.md"
 requires-python = ">=3.10"

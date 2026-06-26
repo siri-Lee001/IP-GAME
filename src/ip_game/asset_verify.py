@@ -22,7 +22,7 @@ def _is_final_delivery(meta: dict) -> bool:
 def verify_project_assets(project_dir: Path, story_path: Path | None = None) -> tuple[bool, list[str]]:
     project_dir = project_dir.resolve()
     story_path = (story_path or (project_dir / "story.json")).resolve()
-    story = json.loads(story_path.read_text(encoding="utf-8"))
+    story = json.loads(story_path.read_text(encoding="utf-8-sig"))
     meta = story.get("meta") or {}
     q = meta.get("questionnaire") or {}
     expected_ratio = _target_ratio(str(q.get("aspect_ratio") or "横版16:9"))
@@ -62,6 +62,9 @@ def verify_project_assets(project_dir: Path, story_path: Path | None = None) -> 
     poster = (meta.get("poster") or "").strip()
     if poster:
         check_image(poster, "meta.poster", "meta")
+    map_overview = (meta.get("mapOverviewImage") or "").strip()
+    if map_overview:
+        check_image(map_overview, "meta.mapOverviewImage", "meta")
 
     for node in story.get("nodes") or []:
         nid = str(node.get("id") or "")

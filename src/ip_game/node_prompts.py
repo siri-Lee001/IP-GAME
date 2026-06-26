@@ -4,6 +4,8 @@ import json
 import re
 from pathlib import Path
 
+from .map_prompt import write_overview_prompts
+
 
 PROMPT_VERSION = "ip-game-v1.2"
 
@@ -160,7 +162,7 @@ def ensure_media_paths(node: dict) -> bool:
 def generate_node_prompts(project_dir: Path, story_path: Path | None = None) -> None:
     project_dir = project_dir.resolve()
     story_path = (story_path or (project_dir / "story.json")).resolve()
-    story = json.loads(story_path.read_text(encoding="utf-8"))
+    story = json.loads(story_path.read_text(encoding="utf-8-sig"))
     meta = story.get("meta") or {}
     q = meta.get("questionnaire") or {}
     aspect_ratio = q.get("aspect_ratio", "横版16:9")
@@ -189,4 +191,6 @@ def generate_node_prompts(project_dir: Path, story_path: Path | None = None) -> 
 
     if changed:
         story_path.write_text(json.dumps(story, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    write_overview_prompts(project_dir, story_path=story_path)
 

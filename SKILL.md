@@ -7,7 +7,7 @@ description: Create and package IP-GAME interactive film games from story.json a
 
 IP-GAME 是一条“互动影游制作流水线”技能，不只是把 `story.json` 拼成网页。正确使用时，必须从剧本确认、角色一致性、节点图片、视频来源、主题包装到资产自检完整走完，并且清楚标记当前交付是 `prototype` 还是 `final`。
 
-运行入口：`ip-game` CLI。当前仓库版本：`0.2.0`。默认安全边界：不内置密钥；本地 CLI 默认不触网；所有输出写入项目目录。
+运行入口：`ip-game` CLI。当前仓库版本：`0.3.0`。默认安全边界：不内置密钥；本地 CLI 默认不触网；所有输出写入项目目录。
 
 ## 必须先读
 
@@ -22,7 +22,7 @@ IP-GAME 是一条“互动影游制作流水线”技能，不只是把 `story.j
 2. 信息不足时只做一次 8 问补充；用户允许 AI 默认后继续。
 3. 先交付并确认结构化剧本：梗概、角色小传、服化道、路线图、节点清单、主题色建议。
 4. 角色图先行：必须确认角色图来源，生成或整理角色定妆图后，再进入节点图。
-5. 节点图：每个节点至少规划 `sceneImage` 和 `storyboardImage` 两类图，比例必须全链路一致。
+5. 图片资产：每个节点至少规划 `sceneImage` 和 `storyboardImage`，并额外生成首页海报 prompt 与路径总览图 prompt，比例必须全链路一致。
 6. 视频：让用户选择视频 API、本地已有视频、或本地静态合成。静态合成只能视为测试/保底，不能冒充高质量成片。
 7. 生成 `game.html`，内含开场海报、播放页、分支选择、路线图、章节跳转、结局页、TTS 开关和本地素材引用。
 8. 运行 `verify` 检查图片、视频、比例、可播放性和最终交付风险。
@@ -59,8 +59,10 @@ IP-GAME 是一条“互动影游制作流水线”技能，不只是把 `story.j
 - `story.meta.questionnaire.aspect_ratio`：`横版16:9` 或 `竖版9:16`，决定图片、视频和网页比例。
 - `story.meta.deliveryTier`：`prototype` 或 `final`。
 - `story.meta.poster`：开场海报。
+- `story.meta.posterPrompt`：首页海报提示词。
 - `story.characters[].characterSheetPrompt`：角色定妆图提示词。
 - `story.characters[].referenceImages` / `images`：角色一致性参考图。
+- `story.meta.mapOverviewImage`：地图页放大展示的路径总览图。
 - `story.nodes[].media.sceneImage`：节点主场景图。
 - `story.nodes[].media.storyboardImage`：九宫格连续分镜图。
 - `story.nodes[].media.videoRefImage`：视频生成参考图，默认优先用分镜图。
@@ -98,14 +100,20 @@ ip-game generate-node-prompts <project-dir>
 
 - `story.json.nodes[].media.scenePrompt`
 - `story.json.nodes[].media.storyboardPrompt`
+- `story.json.meta.mapOverviewPrompt`
+- `story.json.meta.posterPrompt`
 - `assets/prompts/<节点ID>_scene.txt`
 - `assets/prompts/<节点ID>_storyboard.txt`
+- `assets/prompts/home_poster.txt`
+- `assets/prompts/map_overview.txt`
 
 提示词标准：
 
 - 角色图：左侧脸部近景、中间全身三视图、右侧多表情头像，明亮清晰，无文字。
 - 场景图：电影感主场景，角色全身或大半身，不裁头脚，身份一致。
 - 分镜图：一张图内包含 3x3 连续关键帧，左侧保留角色/道具参考区，画面无文字、编号、水印。
+- 路径总览图：不是流程图，而是一张完整的“高定游戏CG密集信息路径图”主视觉；必须跟随当前项目已确认的视觉风格/题材/情绪，不得固定成单一默认风格。
+- 首页海报图：必须是独立的首页主视觉，不是普通节点截图；要为标题与开始按钮预留安全区，并跟随当前项目已确认的视觉风格/题材/情绪。
 
 ## 视频来源
 
@@ -141,11 +149,11 @@ ip-game verify <project-dir>
 
 `game.html` 应支持：
 
-- 开场海报页和开始按钮。
+- 开场海报页和开始按钮，长标题也要能安全排版。
 - 首次进入引导弹窗。
 - 节点视频播放，结束后显示选择。
 - 结局页和结局图。
-- 路线图/章节跳转。
+- 地图页使用“路径总览图 + 简洁跳转按钮”结构，不再依赖流程图式 HTML 拼接。
 - 重播当前节点、回到开场、重新开始。
 - 声音/TTS 开关，避免和视频原声冲突。
 - 纯本地相对路径，不给本地文件添加缓存参数。
@@ -156,6 +164,7 @@ ip-game verify <project-dir>
 ip-game build-html <project-dir> [--story story.json] [--ui ui.json]
 ip-game generate-character-prompts <project-dir> [--story story.json]
 ip-game generate-node-prompts <project-dir> [--story story.json]
+ip-game render-map-overview <project-dir> [--story story.json] [--out assets/images/map_overview.png]
 ip-game make-videos <project-dir> [--story story.json] [--only N0,E0] [--skip-existing] [--size 1280x720]
 ip-game verify <project-dir> [--story story.json]
 ```

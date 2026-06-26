@@ -8,7 +8,7 @@ from pathlib import Path
 def _read_json(path: Path) -> dict:
     if not path.exists():
         return {}
-    return json.loads(path.read_text(encoding="utf-8"))
+    return json.loads(path.read_text(encoding="utf-8-sig"))
 
 
 def build_game_html(project_dir: Path, story_path: Path | None = None, ui_path: Path | None = None) -> Path:
