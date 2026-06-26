@@ -13,6 +13,11 @@
         --primary:#7c3aed;
         --primary2:#22c55e;
         --danger:#ef4444;
+        --overlay-bg:#0f1723;
+        --overlay-panel:#182231;
+        --overlay-card:#223044;
+        --overlay-text:#f4f7fc;
+        --overlay-muted:#b8c5d8;
         --radius:16px;
         --shadow:0 18px 48px rgba(0,0,0,.42);
         --maxw:980px;
@@ -52,18 +57,95 @@
       }
       button.linkBtn{ padding:8px 10px; font-size:13px; background:rgba(0,0,0,.16); }
       .panel{ background:var(--panel); border:1px solid rgba(255,255,255,.09); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; }
-      .home{ display:grid; grid-template-columns:minmax(0,1fr); gap:18px; }
-      .heroText{ padding:18px 18px 0; }
-      .pill{ display:inline-flex; align-items:center; gap:8px; font-size:12px; color:var(--muted); padding:6px 10px; border:1px solid rgba(255,255,255,.11); border-radius:999px; background:rgba(0,0,0,.18); }
-      h1{ font-size:clamp(30px, 5vw, 56px); line-height:1.05; margin:14px 0 10px; letter-spacing:0; }
-      .synopsis{ color:var(--muted); line-height:1.75; margin:0; max-width:75ch; }
+      .home{ position:relative; min-height:clamp(540px, 76vh, 860px); background:#08111b; }
+      .heroText{
+        position:absolute;
+        left:clamp(18px, 3vw, 42px);
+        bottom:clamp(18px, 4vh, 36px);
+        z-index:2;
+        width:min(560px, calc(100% - 36px));
+        padding:0;
+      }
+      .pill{
+        display:inline-flex;
+        align-items:center;
+        gap:8px;
+        font-size:12px;
+        color:rgba(247,250,255,.88);
+        padding:7px 12px;
+        border:1px solid rgba(255,255,255,.14);
+        border-radius:999px;
+        background:rgba(8,17,27,.48);
+        backdrop-filter:blur(18px);
+      }
+      h1{
+        font-size:clamp(42px, 6vw, 86px);
+        line-height:.95;
+        margin:16px 0 14px;
+        letter-spacing:0;
+        color:#f8fbff;
+        text-shadow:0 10px 28px rgba(0,0,0,.34);
+      }
+      .synopsis{
+        color:rgba(244,248,255,.92);
+        line-height:1.72;
+        margin:0;
+        max-width:54ch;
+        padding:14px 16px;
+        border-radius:16px;
+        border:1px solid rgba(255,255,255,.10);
+        background:rgba(8,17,27,.34);
+        backdrop-filter:blur(16px);
+      }
       .heroBtns{ display:flex; gap:10px; flex-wrap:wrap; margin-top:16px; }
-      .posterWrap{ position:relative; background:#05070b; border-top:1px solid rgba(255,255,255,.08); overflow:hidden; }
-      .posterWrap.landscape{ aspect-ratio:16/9; }
-      .posterWrap.portrait{ aspect-ratio:9/16; max-height:76vh; width:min(430px,100%); margin:0 auto; border-left:1px solid rgba(255,255,255,.08); border-right:1px solid rgba(255,255,255,.08); }
-      .posterWrap img{ width:100%; height:100%; object-fit:contain; display:block; }
-      .posterFallback{ min-height:320px; display:grid; place-items:center; text-align:center; padding:24px; color:var(--muted); }
-      .posterFallback .big{ color:var(--text); font-size:34px; font-weight:950; margin-bottom:8px; }
+      .heroBtns button{
+        color:#f6fbff;
+        background:rgba(8,17,27,.52);
+        border-color:rgba(255,255,255,.16);
+        backdrop-filter:blur(18px);
+      }
+      .heroBtns button:hover{
+        background:rgba(8,17,27,.64);
+        border-color:rgba(255,255,255,.24);
+      }
+      .heroBtns button.primary{
+        border:0;
+        background:linear-gradient(135deg, var(--primary), var(--primary2));
+        color:white;
+      }
+      .posterWrap{
+        position:relative;
+        min-height:clamp(540px, 76vh, 860px);
+        background:#05070b;
+        overflow:hidden;
+        border-top:0;
+      }
+      .posterWrap::after{
+        content:"";
+        position:absolute;
+        inset:0;
+        background:
+          linear-gradient(90deg, rgba(8,17,27,.82) 0%, rgba(8,17,27,.56) 28%, rgba(8,17,27,.16) 58%, rgba(8,17,27,.20) 100%),
+          linear-gradient(0deg, rgba(8,17,27,.58) 0%, rgba(8,17,27,0) 36%);
+        pointer-events:none;
+      }
+      .posterWrap.landscape{ aspect-ratio:auto; }
+      .posterWrap.portrait{
+        aspect-ratio:auto;
+        width:min(540px, calc(100vw - 28px));
+        max-height:none;
+        margin:0 auto;
+      }
+      .posterWrap img{ width:100%; height:100%; object-fit:cover; object-position:center; display:block; }
+      .posterFallback{
+        min-height:clamp(540px, 76vh, 860px);
+        display:grid;
+        place-items:center;
+        text-align:center;
+        padding:24px;
+        color:rgba(244,248,255,.82);
+      }
+      .posterFallback .big{ color:#f8fbff; font-size:34px; font-weight:950; margin-bottom:8px; }
       .playView{ display:none; }
       .videoWrap{ background:#000; border-radius:0; overflow:hidden; border-bottom:1px solid rgba(255,255,255,.09); }
       .videoWrap.landscape{ aspect-ratio:16/9; }
@@ -80,26 +162,126 @@
       .endingImg{ margin-top:14px; width:100%; border-radius:14px; border:1px solid rgba(255,255,255,.10); display:none; }
       .status{ margin-top:10px; color:var(--muted); font-size:13px; display:none; }
       .modalMask{ display:none; position:fixed; inset:0; z-index:20; background:rgba(0,0,0,.68); padding:20px; overflow:auto; }
-      .modal{ width:min(900px,100%); margin:40px auto; background:#111722; border:1px solid rgba(255,255,255,.12); border-radius:18px; box-shadow:var(--shadow); overflow:hidden; }
-      .modalHead{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 16px; border-bottom:1px solid rgba(255,255,255,.10); }
-      .modalTitle{ font-weight:950; }
-      .modalBody{ padding:16px; }
+      .modal{
+        width:min(1120px,100%);
+        margin:34px auto;
+        background:
+          radial-gradient(780px 420px at 0% 0%, rgba(47,163,107,.12), transparent 62%),
+          linear-gradient(180deg, var(--overlay-panel), var(--overlay-bg));
+        border:1px solid rgba(255,255,255,.12);
+        border-radius:22px;
+        box-shadow:var(--shadow);
+        overflow:hidden;
+      }
+      .modalHead{
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:12px;
+        padding:18px 20px;
+        border-bottom:1px solid rgba(255,255,255,.08);
+      }
+      .modalTitle{ font-weight:950; font-size:22px; color:var(--overlay-text); }
+      .modalBody{ padding:20px; max-height:min(78vh, 860px); overflow:auto; }
+      .modal .linkBtn{
+        color:var(--overlay-text);
+        background:rgba(255,255,255,.04);
+        border-color:rgba(255,255,255,.10);
+      }
+      .modal .linkBtn:hover{
+        background:rgba(255,255,255,.08);
+        border-color:rgba(255,255,255,.18);
+      }
       .mapGrid{ display:grid; grid-template-columns:1fr; gap:14px; }
-      .mapCard{ border:1px solid rgba(255,255,255,.10); border-radius:14px; background:rgba(255,255,255,.05); padding:12px; }
-      .mapCardTitle{ font-weight:900; margin-bottom:10px; }
-      .mapLine{ white-space:pre-wrap; color:var(--muted); line-height:1.75; font-size:14px; }
-      .nodeList{ display:grid; gap:8px; }
-      .nodeJump{ text-align:left; border-radius:12px; }
-      .nodeJump.current{ outline:2px solid color-mix(in srgb, var(--primary) 75%, white); }
+      .mapCard{
+        border:1px solid rgba(255,255,255,.08);
+        border-radius:18px;
+        background:rgba(255,255,255,.04);
+        padding:16px;
+      }
+      .mapCardTitle{ font-weight:900; margin-bottom:12px; font-size:18px; color:var(--overlay-text); }
+      .mapLine{ color:var(--overlay-muted); font-size:14px; }
+      .routeStack{ display:grid; gap:10px; }
+      .routeStep{
+        border:1px solid rgba(255,255,255,.08);
+        border-radius:16px;
+        background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+        padding:14px;
+      }
+      .routeStep.current{
+        background:linear-gradient(180deg, color-mix(in srgb, var(--primary) 16%, rgba(255,255,255,.06)), rgba(255,255,255,.03));
+        border-color:color-mix(in srgb, var(--primary) 40%, rgba(255,255,255,.10));
+      }
+      .routeStepHead{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+      .routeStepTitle{ font-weight:850; color:var(--overlay-text); font-size:15px; }
+      .routeBadge, .nodeChip{
+        display:inline-flex;
+        align-items:center;
+        padding:5px 9px;
+        border-radius:999px;
+        font-size:11px;
+        font-weight:800;
+        border:1px solid rgba(255,255,255,.12);
+        background:rgba(255,255,255,.06);
+        color:var(--overlay-text);
+      }
+      .routeStepMeta{ margin-top:8px; color:var(--overlay-muted); line-height:1.72; font-size:13px; }
+      .routeChoices{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+      .routeChoice{
+        display:inline-flex;
+        align-items:center;
+        gap:6px;
+        font-size:12px;
+        line-height:1.4;
+        color:#f8fbff;
+        padding:7px 10px;
+        border-radius:999px;
+        border:1px solid rgba(47,163,107,.32);
+        background:rgba(47,163,107,.16);
+      }
+      .routeChoice.end{ border-color:rgba(242,140,40,.28); background:rgba(242,140,40,.14); }
+      .nodeList{ display:grid; gap:10px; }
+      .nodeJump{
+        display:flex;
+        flex-direction:column;
+        align-items:flex-start;
+        gap:8px;
+        text-align:left;
+        border-radius:16px;
+        padding:14px 16px;
+        color:var(--overlay-text);
+        background:rgba(255,255,255,.05);
+        border:1px solid rgba(255,255,255,.08);
+      }
+      .nodeJump:hover{
+        border-color:rgba(255,255,255,.18);
+        background:rgba(255,255,255,.08);
+      }
+      .nodeJump.current{
+        outline:2px solid color-mix(in srgb, var(--primary) 75%, white);
+        background:color-mix(in srgb, var(--primary) 14%, rgba(255,255,255,.06));
+      }
+      .nodeJumpTitle{ font-weight:900; font-size:16px; color:var(--overlay-text); }
+      .nodeJumpMeta{ display:flex; flex-wrap:wrap; gap:8px; color:var(--overlay-muted); font-size:12px; }
+      .nodeJumpDesc{ color:var(--overlay-muted); font-size:13px; line-height:1.65; }
       .introText{ white-space:pre-wrap; color:var(--muted); line-height:1.8; }
       .introKpis{ display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
       .introKpis span{ font-size:12px; color:var(--muted); border:1px solid rgba(255,255,255,.10); background:rgba(0,0,0,.18); border-radius:999px; padding:6px 9px; }
       .introActions{ display:flex; gap:10px; flex-wrap:wrap; margin-top:16px; }
+      @media (max-width: 760px){
+        .home{ min-height:620px; }
+        .heroText{
+          left:18px;
+          right:18px;
+          bottom:18px;
+          width:auto;
+        }
+        h1{ font-size:clamp(40px, 14vw, 68px); }
+        .synopsis{ max-width:none; }
+        .posterWrap, .posterFallback{ min-height:620px; }
+      }
       @media (min-width: 860px){
-        .home{ grid-template-columns:.9fr 1.1fr; align-items:stretch; }
-        .heroText{ padding:24px; }
-        .posterWrap{ border-top:0; border-left:1px solid rgba(255,255,255,.08); }
-        .mapGrid{ grid-template-columns:.9fr 1.1fr; }
+        .mapGrid{ grid-template-columns:.94fr 1.06fr; }
       }
     </style>
   </head>
@@ -308,19 +490,77 @@
         };
       }
 
+      function shortText(text, limit = 74){
+        const raw = String(text || '').replace(/\s+/g, ' ').trim();
+        if (!raw) return '';
+        return raw.length > limit ? raw.slice(0, limit - 1) + '…' : raw;
+      }
+
       function renderMap(){
-        const lines = [];
         el.mapNodes.innerHTML = '';
+        el.mapRoute.innerHTML = '';
+        const routeStack = document.createElement('div');
+        routeStack.className = 'routeStack';
         for (const n of (story.nodes || [])) {
-          const choices = (n.choices || []).map(c => `${c.text || c.to} -> ${c.to}`).join('；');
-          lines.push(`• ${n.id} ${n.title || ''}${choices ? '：' + choices : ''}`);
+          const step = document.createElement('div');
+          step.className = 'routeStep' + (state.currentNodeId === n.id ? ' current' : '');
+          const stepHead = document.createElement('div');
+          stepHead.className = 'routeStepHead';
+          const stepTitle = document.createElement('div');
+          stepTitle.className = 'routeStepTitle';
+          stepTitle.textContent = `${n.id} · ${n.title || n.id}`;
+          const stepBadge = document.createElement('span');
+          stepBadge.className = 'routeBadge';
+          stepBadge.textContent = n.isEnding ? '结局' : '剧情';
+          stepHead.appendChild(stepTitle);
+          stepHead.appendChild(stepBadge);
+          step.appendChild(stepHead);
+
+          const stepMeta = document.createElement('div');
+          stepMeta.className = 'routeStepMeta';
+          stepMeta.textContent = shortText(n.description || n.endingText || captionFor(n), 92);
+          step.appendChild(stepMeta);
+
+          const choices = n.choices || [];
+          if (choices.length) {
+            const choiceWrap = document.createElement('div');
+            choiceWrap.className = 'routeChoices';
+            for (const c of choices) {
+              const target = nodeMap.get(String(c.to));
+              const item = document.createElement('span');
+              item.className = 'routeChoice' + (target && target.isEnding ? ' end' : '');
+              item.textContent = `${c.text || c.to} -> ${target ? (target.title || target.id) : c.to}`;
+              choiceWrap.appendChild(item);
+            }
+            step.appendChild(choiceWrap);
+          }
+          routeStack.appendChild(step);
+
           const b = document.createElement('button');
           b.className = 'nodeJump' + (state.currentNodeId === n.id ? ' current' : '');
-          b.textContent = `${n.id} · ${n.title || n.id}`;
+          const title = document.createElement('span');
+          title.className = 'nodeJumpTitle';
+          title.textContent = `${n.id} · ${n.title || n.id}`;
+          const meta = document.createElement('span');
+          meta.className = 'nodeJumpMeta';
+          const typeChip = document.createElement('span');
+          typeChip.className = 'nodeChip';
+          typeChip.textContent = n.isEnding ? '结局' : '剧情节点';
+          const countChip = document.createElement('span');
+          countChip.className = 'nodeChip';
+          countChip.textContent = n.isEnding ? '终点' : `${choices.length} 个选项`;
+          meta.appendChild(typeChip);
+          meta.appendChild(countChip);
+          const desc = document.createElement('span');
+          desc.className = 'nodeJumpDesc';
+          desc.textContent = shortText(n.description || n.endingText || captionFor(n), 68);
+          b.appendChild(title);
+          b.appendChild(meta);
+          b.appendChild(desc);
           b.onclick = () => { hide(el.mapMask); playNode(n.id); };
           el.mapNodes.appendChild(b);
         }
-        el.mapRoute.textContent = lines.join('\\n');
+        el.mapRoute.appendChild(routeStack);
       }
 
       function renderChoices(n){
