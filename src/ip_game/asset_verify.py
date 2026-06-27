@@ -42,7 +42,7 @@ def verify_project_assets(project_dir: Path, story_path: Path | None = None) -> 
             return None
         return p
 
-    def check_image(rel: str | None, what: str, node_id: str) -> None:
+    def check_image(rel: str | None, what: str, node_id: str, require_ratio: bool = True) -> None:
         p = check_rel(rel, what, node_id)
         if not p:
             return
@@ -56,7 +56,7 @@ def verify_project_assets(project_dir: Path, story_path: Path | None = None) -> 
             problems.append(f"[{node_id}] invalid image size {what}: {rel}")
             return
         ratio = w / h
-        if abs(ratio - expected_ratio) > 0.08:
+        if require_ratio and abs(ratio - expected_ratio) > 0.08:
             problems.append(f"[{node_id}] image aspect mismatch {what}: {rel} ({w}x{h})")
 
     poster = (meta.get("poster") or "").strip()
@@ -87,10 +87,10 @@ def verify_project_assets(project_dir: Path, story_path: Path | None = None) -> 
         for ch in story.get("characters") or []:
             cid = str(ch.get("id") or ch.get("name") or "character")
             for rel in (ch.get("referenceImages") or []):
-                check_image(rel, "character.referenceImages", cid)
+                check_image(rel, "character.referenceImages", cid, require_ratio=False)
             for key, rel in (ch.get("images") or {}).items():
                 if rel:
-                    check_image(rel, f"character.images.{key}", cid)
+                    check_image(rel, f"character.images.{key}", cid, require_ratio=False)
 
     ok = len(problems) == 0
     return ok, problems

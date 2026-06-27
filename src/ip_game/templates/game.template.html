@@ -66,13 +66,57 @@
         left:clamp(22px, 4vw, 56px);
         bottom:clamp(22px, 5vh, 48px);
         z-index:2;
-        width:min(620px, calc(100% - 44px));
-        padding:26px 26px 24px;
-        border-radius:28px;
-        border:1px solid rgba(255,255,255,.10);
-        background:linear-gradient(180deg, rgba(6,12,21,.18), rgba(6,12,21,.42) 44%, rgba(6,12,21,.72));
-        backdrop-filter:blur(22px);
-        box-shadow:0 22px 62px rgba(0,0,0,.32);
+        width:min(500px, calc(100% - 44px));
+        padding:18px;
+        border-radius:24px;
+        border:1px solid rgba(255,255,255,.14);
+        background:
+          linear-gradient(135deg, rgba(4,10,18,.48), rgba(4,10,18,.22) 62%, rgba(4,10,18,.08)),
+          linear-gradient(0deg, rgba(4,10,18,.20), rgba(4,10,18,.05));
+        backdrop-filter:blur(22px) saturate(140%);
+        box-shadow:0 18px 48px rgba(0,0,0,.22);
+        transition:opacity .22s ease, transform .22s ease, visibility .22s ease;
+      }
+      .home.heroCollapsed .heroText{
+        opacity:0;
+        visibility:hidden;
+        pointer-events:none;
+        transform:translateY(14px) scale(.985);
+      }
+      .heroChrome{
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:10px;
+      }
+      .heroCollapse,
+      .heroReveal{
+        display:inline-flex;
+        align-items:center;
+        gap:8px;
+        color:#f6fbff;
+        border-color:rgba(255,255,255,.16);
+        background:rgba(8,17,27,.38);
+        backdrop-filter:blur(18px) saturate(130%);
+        box-shadow:0 10px 28px rgba(0,0,0,.14);
+      }
+      .heroCollapse{
+        flex:0 0 auto;
+        padding:7px 10px;
+        font-size:12px;
+      }
+      .heroReveal{
+        position:absolute;
+        left:clamp(22px, 4vw, 56px);
+        bottom:clamp(22px, 5vh, 48px);
+        z-index:3;
+        padding:11px 14px;
+        border-radius:999px;
+        font-weight:900;
+        background:rgba(8,17,27,.36);
+      }
+      .heroReveal[hidden]{
+        display:none;
       }
       .pill{
         display:inline-flex;
@@ -88,9 +132,9 @@
       }
       .heroTitle{
         font-family:var(--display-font);
-        font-size:min(clamp(36px, 5vw, 78px), var(--hero-title-size, 78px));
+        font-size:min(clamp(34px, 4.4vw, 68px), var(--hero-title-size, 68px));
         line-height:.98;
-        margin:18px 0 14px;
+        margin:14px 0 12px;
         letter-spacing:0;
         color:#f8fbff;
         text-shadow:0 14px 34px rgba(0,0,0,.34);
@@ -100,12 +144,69 @@
       }
       .heroLead{
         color:rgba(244,248,255,.92);
-        line-height:1.82;
+        line-height:1.72;
         margin:0;
-        max-width:42ch;
-        font-size:15px;
+        max-width:58ch;
+        max-height:min(24vh, 210px);
+        overflow:auto;
+        font-size:14px;
         text-shadow:0 6px 20px rgba(0,0,0,.20);
+        padding:0 16px 16px;
       }
+      .storyIntro{
+        margin-top:10px;
+        max-width:100%;
+        border:1px solid rgba(255,255,255,.16);
+        border-radius:18px;
+        background:rgba(9,18,29,.28);
+        backdrop-filter:blur(20px) saturate(130%);
+        box-shadow:inset 0 1px 0 rgba(255,255,255,.08), 0 14px 34px rgba(0,0,0,.18);
+        overflow:hidden;
+      }
+      .storyIntro[open]{ background:rgba(9,18,29,.46); }
+      .storyIntro summary{
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:14px;
+        min-height:48px;
+        padding:12px 14px;
+        cursor:pointer;
+        list-style:none;
+        color:#f7fbff;
+      }
+      .storyIntro summary::-webkit-details-marker{ display:none; }
+      .storyIntroHead{ min-width:0; display:grid; gap:3px; }
+      .storyIntroTitle{ font-weight:900; font-size:14px; letter-spacing:0; }
+      .storyIntroPreview{
+        color:rgba(224,235,248,.76);
+        font-size:12px;
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
+      }
+      .storyIntroToggle{
+        flex:0 0 auto;
+        display:inline-flex;
+        align-items:center;
+        gap:6px;
+        color:#f7fbff;
+        font-size:12px;
+        font-weight:800;
+        padding:7px 10px;
+        border-radius:999px;
+        background:rgba(255,255,255,.10);
+        border:1px solid rgba(255,255,255,.14);
+      }
+      .storyIntroToggle .collapseText{ display:none; }
+      .storyIntro[open] .storyIntroToggle .expandText{ display:none; }
+      .storyIntro[open] .storyIntroToggle .collapseText{ display:inline; }
+      .storyIntroToggle .chev{ transition:transform .18s ease; }
+      .storyIntro[open] .storyIntroToggle .chev{ transform:rotate(180deg); }
+      .storyIntro[open] .storyIntroPreview{ display:none; }
+      .storyIntro.empty{ display:none; }
+      .storyIntro[open] .heroLead{ border-top:1px solid rgba(255,255,255,.10); }
+      .storyIntro:not([open]) .heroLead{ display:none; }
       .heroBtns{ display:flex; gap:10px; flex-wrap:wrap; margin-top:18px; }
       .heroBtns button{
         color:#f6fbff;
@@ -398,13 +499,19 @@
           right:18px;
           bottom:18px;
           width:auto;
-          padding:22px 18px 18px;
+          padding:16px;
+          border-radius:20px;
         }
         .heroTitle{
-          font-size:min(clamp(32px, 11.8vw, 52px), var(--hero-title-size, 52px));
+          font-size:min(clamp(30px, 10.8vw, 48px), var(--hero-title-size, 48px));
           max-width:100%;
         }
-        .heroLead{ max-width:none; }
+        .heroReveal{
+          left:18px;
+          bottom:18px;
+        }
+        .storyIntro{ border-radius:16px; }
+        .heroLead{ max-width:none; max-height:28vh; }
         .posterWrap, .posterFallback{ min-height:620px; }
         .nodeBody{ padding:20px 16px 24px; }
         .nodeDesc{ font-size:16px; }
@@ -430,15 +537,32 @@
       </div>
 
       <section class="panel home" id="home">
-        <div class="heroText">
-          <div class="pill" id="pill">离线可玩 · HTML 单文件</div>
+        <div class="heroText" id="heroText">
+          <div class="heroChrome">
+            <div class="pill" id="pill">离线可玩 · HTML 单文件</div>
+            <button class="heroCollapse" id="heroCollapse" type="button">收起</button>
+          </div>
           <h1 class="heroTitle" id="heroTitle">__TITLE__</h1>
-          <p class="heroLead" id="heroLead">__SYNOPSIS__</p>
+          <details class="storyIntro" id="storyIntro" open>
+            <summary>
+              <span class="storyIntroHead">
+                <span class="storyIntroTitle">故事简介</span>
+                <span class="storyIntroPreview" id="storyIntroPreview">__SYNOPSIS__</span>
+              </span>
+              <span class="storyIntroToggle" aria-hidden="true">
+                <span class="expandText">展开</span>
+                <span class="collapseText">收起</span>
+                <span class="chev">⌄</span>
+              </span>
+            </summary>
+            <p class="heroLead" id="heroLead">__SYNOPSIS__</p>
+          </details>
           <div class="heroBtns">
             <button class="primary" id="btnStart" type="button">开始</button>
             <button id="btnJump" type="button">选择章节</button>
           </div>
         </div>
+        <button class="heroReveal" id="heroReveal" type="button" hidden>展开封面信息</button>
         <div class="posterWrap landscape" id="posterWrap">
           <img id="startPoster" alt="游戏海报" style="display:none;" />
           <div class="posterFallback" id="posterFallback">
@@ -576,8 +700,13 @@
         introText: document.getElementById('introText'),
         introKpis: document.getElementById('introKpis'),
         btnSound: document.getElementById('btnSound'),
+        heroText: document.getElementById('heroText'),
+        heroCollapse: document.getElementById('heroCollapse'),
+        heroReveal: document.getElementById('heroReveal'),
         heroTitle: document.getElementById('heroTitle'),
         heroLead: document.getElementById('heroLead'),
+        storyIntro: document.getElementById('storyIntro'),
+        storyIntroPreview: document.getElementById('storyIntroPreview'),
         brandSub: document.querySelector('.brandSub'),
         choicesPanel: document.getElementById('choicesPanel'),
         choicesHint: document.getElementById('choicesHint')
@@ -662,14 +791,27 @@
       function fitHeroTitle(){
         const text = String(el.heroTitle.textContent || '').trim();
         const length = Array.from(text).length;
-        let size = 78;
+        let size = 68;
         let measure = '12ch';
-        if (length > 10) size = 70;
-        if (length > 16) { size = 62; measure = '14ch'; }
-        if (length > 24) { size = 54; measure = '16ch'; }
-        if (length > 34) { size = 46; measure = '18ch'; }
+        if (length > 10) size = 62;
+        if (length > 16) { size = 56; measure = '14ch'; }
+        if (length > 24) { size = 48; measure = '16ch'; }
+        if (length > 34) { size = 42; measure = '18ch'; }
         el.heroTitle.style.setProperty('--hero-title-size', size + 'px');
         el.heroTitle.style.setProperty('--hero-title-measure', measure);
+      }
+
+      function setHeroCollapsed(collapsed){
+        el.home.classList.toggle('heroCollapsed', collapsed);
+        el.heroReveal.hidden = !collapsed;
+        el.heroCollapse.setAttribute('aria-expanded', String(!collapsed));
+        el.heroReveal.setAttribute('aria-expanded', String(!collapsed));
+      }
+
+      function setupHeroPanel(){
+        setHeroCollapsed(features.heroInfoDefaultCollapsed === true);
+        el.heroCollapse.onclick = () => setHeroCollapsed(true);
+        el.heroReveal.onclick = () => setHeroCollapsed(false);
       }
 
       function buildFlowOrder(){
@@ -902,10 +1044,12 @@
       const heroLead = normalizeText(el.heroLead.textContent) || normalizeText(el.brandSub.textContent);
       if (heroLead) {
         el.heroLead.textContent = heroLead;
+        el.storyIntroPreview.textContent = shortText(heroLead, 44);
       } else {
-        el.heroLead.style.display = 'none';
+        el.storyIntro.classList.add('empty');
       }
       fitHeroTitle();
+      setupHeroPanel();
       setStage('home');
       setupIntro();
     </script>

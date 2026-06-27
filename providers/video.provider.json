@@ -1,42 +1,53 @@
 {
-  "type": "video",
-  "name": "aliyun_dashscope_wan_i2v_ref_first_frame",
-  "notes": "阿里云百炼 Wan 图生视频（参考图/首帧，异步）。推荐使用 story.json 的 media.videoRefImage（默认指向 storyboardImage）作为 input.img_url 的 data URL。创建任务后轮询 tasks 接口获取 output.video_url。Authorization 使用环境变量 DASHSCOPE_API_KEY 拼接 Bearer。此文件只提供配置说明，不包含密钥，也不会自动触发生成；调用视频 API 必须得到用户明确确认。",
-  "secretPolicy": {
-    "requiredEnv": "DASHSCOPE_API_KEY",
-    "neverCommitSecrets": true
+  "type": "video-provider-template",
+  "name": "generic_video_provider_capabilities",
+  "purpose": "Describe video API capabilities without committing a real provider endpoint, model, payload, token, key name, or user-specific request body.",
+  "securityPolicy": {
+    "neverCommitSecrets": true,
+    "neverCommitRealEndpointOrAccountPayload": true,
+    "storeKeysOnlyInLocalEnvironment": true,
+    "projectLocalProviderConfigShouldStayUntracked": true
   },
-  "http": {
-    "endpoint": "https://dashscope.aliyuncs.com/api/v1/services/aigc/video-generation/video-synthesis",
-    "method": "POST",
-    "headers": {
-      "X-DashScope-Async": "enable",
-      "Authorization": "Bearer {{API_KEY}}",
-      "Content-Type": "application/json"
+  "capabilityTiers": [
+    {
+      "tier": "A_MULTI_REFERENCE",
+      "useWhen": "The provider accepts multiple image or video references.",
+      "strategy": "Send separate character sheets plus the node storyboard or scene image; bind every reference by role in the prompt."
     },
-    "bodyTemplate": {
-      "model": "wan2.6-i2v-flash",
-      "input": {
-        "prompt": "{{PROMPT}}",
-        "img_url": "{{FIRST_FRAME_IMAGE_DATA_URL}}"
-      },
-      "parameters": {
-        "resolution": "{{RESOLUTION}}",
-        "duration": "{{DURATION_SECONDS}}",
-        "prompt_extend": true,
-        "watermark": false
-      }
+    {
+      "tier": "B_FIRST_LAST_FRAME",
+      "useWhen": "The provider accepts start and end frames.",
+      "strategy": "Generate consistent first and last frames from the same character anchors; split complex nodes into short clips."
     },
-    "responseMap": {
-      "kind": "object",
-      "path": "output.task_id"
+    {
+      "tier": "C_SINGLE_REFERENCE",
+      "useWhen": "The provider accepts only one reference image.",
+      "strategy": "Use a no-text composite reference image: left identity strip, right keyframes. Focus each clip on one character or one relationship."
     },
-    "async": {
-      "enabled": true,
-      "statusEndpoint": "https://dashscope.aliyuncs.com/api/v1/tasks/{task_id}",
-      "statusPath": "output.task_status",
-      "successValue": "SUCCEEDED",
-      "resultPath": "output.video_url"
+    {
+      "tier": "D_TEXT_ONLY",
+      "useWhen": "The provider accepts prompt text only.",
+      "strategy": "Treat character consistency as prototype risk; reduce multi-character close-ups and rely on strong identity anchors."
+    },
+    {
+      "tier": "E_LOCAL_OR_USER_VIDEO",
+      "useWhen": "The user provides videos or the project uses local static-image synthesis.",
+      "strategy": "Map local videos into assets/videos or mark static synthesis as prototype."
     }
+  ],
+  "qualityRules": [
+    "Ask the user to choose or provide the video provider before API generation.",
+    "Do not assume any provider supports multiple references, first/last frame, or async polling; inspect the user-provided API format first.",
+    "Never paste user keys, tokens, cookies, signed URLs, or account-specific payloads into this repository.",
+    "When quota is limited, prefer duration <= 8 seconds and avoid resubmitting successful or running jobs.",
+    "If same-face, face-swap, or costume fusion appears, diagnose reference quality, identity anchors, prompt binding, and provider capability before retrying."
+  ],
+  "localConfigShapeExample": {
+    "providerName": "USER_LOCAL_PROVIDER_NAME",
+    "capabilityTier": "A_MULTI_REFERENCE | B_FIRST_LAST_FRAME | C_SINGLE_REFERENCE | D_TEXT_ONLY | E_LOCAL_OR_USER_VIDEO",
+    "apiKeyEnv": "USER_LOCAL_ENV_VAR_NAME",
+    "endpoint": "USER_LOCAL_ENDPOINT_NOT_FOR_GIT",
+    "requestTemplate": "USER_LOCAL_PAYLOAD_TEMPLATE_NOT_FOR_GIT",
+    "resultMapping": "USER_LOCAL_RESPONSE_MAPPING_NOT_FOR_GIT"
   }
 }

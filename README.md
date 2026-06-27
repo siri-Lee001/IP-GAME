@@ -96,6 +96,9 @@ Recent hardening focused on preventing the exact problems uncovered during live 
 - HTML map page now expects a large overview image plus simple jump buttons, rather than an in-page pseudo-flowchart.
 - Verifier now checks `meta.mapOverviewImage` when present.
 - Template normalizes escaped `\\n` text before rendering captions.
+- Homepage info is a translucent, collapsible panel. It opens by default with the story synopsis expanded, so first-time players understand the premise, then can collapse it to inspect the poster.
+- Storyboard prompts now include a character differentiation matrix: face shape, hair silhouette, age signal, body language, costume palette, and unique props are locked per character before image/video generation.
+- Video API handling is provider-agnostic. The repository keeps only capability tiers and local-config placeholders, never real endpoints, account payloads, key names, tokens, or user-specific request bodies.
 - Repository includes regression tests for prompt generation, BOM handling, map UI structure, and route overview asset verification.
 
 ## Delivery Tiers
@@ -115,13 +118,22 @@ The CLI does not call any cloud video API by default. A provider reference is in
 providers/video.provider.json
 ```
 
-It describes an Aliyun DashScope Wan image-to-video async setup and expects the key in the `DASHSCOPE_API_KEY` environment variable. The file is a configuration reference only. It contains no secrets and should not be auto-triggered without user confirmation.
+It is a provider-agnostic capability template. It intentionally does not include a real endpoint, model name, API key environment variable, account-specific payload, or user request body. Put real provider details only in a project-local untracked config or in the current runtime environment after the user explicitly confirms API generation.
 
 Recommended source order:
 
 1. User-confirmed video API for high-quality output.
 2. User-provided local MP4 files.
 3. Local static synthesis for prototype fallback.
+
+Before calling any video API, classify the provider capability:
+
+- Multi-reference APIs: pass each character sheet separately plus the node storyboard/scene reference, and bind every image index in the prompt.
+- First/last-frame APIs: generate consistent first and last frames, keep clips short, and split complex nodes before stitching.
+- Single-reference APIs: create one no-text composite reference image with a character identity strip and 1-3 node keyframes.
+- Text-only APIs: treat character consistency as a known risk; use strong identity anchors, single-character shots, and mark as prototype unless the user accepts the limitation.
+
+When quota is limited, new API tasks should default to 8 seconds or less. Never resubmit successful/running tasks just to inspect quality; log task IDs and diagnose failures first.
 
 ## Skill Usage
 
